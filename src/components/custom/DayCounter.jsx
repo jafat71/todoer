@@ -23,7 +23,7 @@ const DayCounter = () => {
     }, [targetDate]);
 
     return (
-        <Card className="text-center">
+        <Card className="text-center bg-gray-100 w-1/2 md:w-full">
             <CardHeader>
                 <CardTitle>Days Remaining</CardTitle>
             </CardHeader>

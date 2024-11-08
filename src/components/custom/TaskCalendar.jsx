@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-
+import { v4 as uuidv4 } from 'uuid'; 
 import { Button } from "@/components/ui/button"; 
 import { Input } from "@/components/ui/input"; 
+
 import { 
   AlertDialog, 
   AlertDialogTrigger, 
@@ -19,52 +20,48 @@ const TaskCalendar = () => {
   const [events, setEvents] = useState([]);
   const [newEvent, setNewEvent] = useState({ title: '', date: '' });
   const [openDialog, setOpenDialog] = useState(false); // State to control the dialog visibility
-  const [selectedEvent, setSelectedEvent] = useState(null); // To store the event to delete
 
-  // Function to add a new event to the calendar
+  useEffect(() => {
+    console.log(events)
+  }, [events]);
+
   const addEvent = () => {
-    console.log('Adding event:', newEvent); // Debug: check event data
     if (newEvent.title && newEvent.date) {
       const newEventWithId = {
-        id: new Date().getTime(), // Use a timestamp as unique ID
+        id: uuidv4(), 
         title: newEvent.title,
         date: newEvent.date,
       };
-      console.log('Event added:', newEventWithId); // Debug: check the added event
-      setEvents([...events, newEventWithId]); // Add the event to the calendar
-      setNewEvent({ title: '', date: '' }); // Clear the form
-      setOpenDialog(false); // Close the dialog
+      setEvents([...events, newEventWithId]); 
+      setNewEvent({ title: '', date: '' }); 
+      setOpenDialog(false);
     } else {
       alert('Please enter a title and a date');
     }
   };
 
-  // Function to handle dateClick event
   const handleDateClick = (info) => {
-    console.log('Date clicked:', info.dateStr); // Debug: log the clicked date
     setNewEvent({
       title: '',
-      date: info.dateStr, // Use the clicked date
+      date: info.dateStr,
     });
-    setOpenDialog(true); // Open the dialog
+    setOpenDialog(true); 
   };
 
-  // Function to handle eventClick event for deleting
   const handleEventClick = (info) => {
-    console.log('Event clicked:', info.event); // Debug: log the clicked event
     const eventToDelete = info.event;
     const confirmDelete = window.confirm(`¿Estás seguro de eliminar el evento "${eventToDelete.title}"?`);
     if (confirmDelete) {
-      // Remove event from state
-      setEvents(events.filter(event => event.id !== eventToDelete.id));
+      const filteredEvents = events.filter(e=>e.id!==eventToDelete.id)
+      console.log(filteredEvents)
+      setEvents(filteredEvents);
     }
   };
 
   return (
-    <div className="col-span-2 p-4 border rounded-lg bg-white shadow-lg">
+    <div className="p-4 border rounded-lg bg-white shadow-lg">
       <h2 className="text-xl font-bold mb-4">Calendario</h2>
 
-      {/* AlertDialog */}
       <AlertDialog open={openDialog} onOpenChange={setOpenDialog}>
 
         <AlertDialogContent>
@@ -111,6 +108,12 @@ const TaskCalendar = () => {
           left: 'prev,next today',
           center: 'title',
           right: 'dayGridMonth,dayGridWeek,dayGridDay',
+        }}
+        customButtons={{
+          myCustomButton: {
+      text: 'Custom Button',
+      click: () => alert('Clicked custom button!'),
+    },
         }}
         height="auto"
         dateClick={handleDateClick} // Use the dateClick handler
