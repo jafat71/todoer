@@ -70,14 +70,12 @@ const TaskCalendar = () => {
           </AlertDialogHeader>
 
           <AlertDialogDescription>
-            {/* Form inside the Alert Dialog */}
             <div className="space-y-2">
               <Input
                 type="text"
                 placeholder="Título del evento"
                 value={newEvent.title}
                 onChange={(e) => {
-                  console.log('Title changed:', e.target.value); // Debug: log title change
                   setNewEvent({ ...newEvent, title: e.target.value });
                 }}
               />
@@ -85,7 +83,6 @@ const TaskCalendar = () => {
                 type="date"
                 value={newEvent.date}
                 onChange={(e) => {
-                  console.log('Date changed:', e.target.value); // Debug: log date change
                   setNewEvent({ ...newEvent, date: e.target.value });
                 }}
               />
@@ -98,12 +95,19 @@ const TaskCalendar = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
       {/* FullCalendar with events */}
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
-        events={events} // Display the events
+        events={events} 
+        dayHeaderClassNames={"bg-black text-white"}
+        eventClassNames={"bg-black text-white p-2 font-bold"}
+        dayCellClassNames={"bg-gray-100"}
+        businessHours
+        buttonHints
+        footerToolbar
+        viewClassNames={"rounded-md "}
+        titleFormat={""}
         headerToolbar={{
           left: 'prev,next today',
           center: 'title',

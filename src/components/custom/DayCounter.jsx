@@ -1,37 +1,47 @@
-import { useEffect, useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { useTodoerContext } from "@/contexts/AppContext";
 
 const DayCounter = () => {
-    let targetDate = new Date()
-    targetDate.setDate(targetDate.getDate() + 7); 
-    const [daysRemaining, setDaysRemaining] = useState(calculateDaysRemaining());
+    const { daysRemaining, period: totalDays } = useTodoerContext();
 
-    function calculateDaysRemaining() {
-        const now = new Date();
-        const difference = targetDate - now;
-        return Math.ceil(difference / (1000 * 60 * 60 * 24));
-    }
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setDaysRemaining(calculateDaysRemaining());
-        }, 1000 * 60 * 60 * 24); // Actualizar cada día
-
-        return () => clearInterval(interval);
-    }, [targetDate]);
+    const progressValue = daysRemaining ?  (100 - (daysRemaining / totalDays) * 100).toFixed(2) : 0;
 
     return (
-        <Card className="text-center bg-gray-100 w-1/2 md:w-full">
+        <Card className="text-center bg-black w-full  rounded-xl h-[350px] lg:h-[430px]">
             <CardHeader>
-                <CardTitle>Days Remaining</CardTitle>
+                <CardTitle className="text-2xl font-bold text-white">Time Left</CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-col items-center space-y-4">
-                <Badge variant="outline" className="bg-black text-6xl text-white p-4">
-                    {daysRemaining} 
-                </Badge>
-                <Progress value={(100 - (daysRemaining / 30) * 100)} className="w-full rounded-xl" />
+            <CardContent className="flex flex-col items-center space-y-6">
+                <div className="flex flex-col gap-x-4">
+                    <div>
+                        <div className="text-5xl md:text-6xl lg:text-8xl text-white rounded-full shadow-md">
+                            {totalDays}
+                        </div>
+                        <div className="text-white">
+                            Days since begin
+                        </div>
+
+                    </div>
+                    <div>
+                    <div className="text-5xl md:text-6xl lg:text-8xl text-white rounded-full shadow-md">
+                            {daysRemaining}
+                        </div>
+                        <div className="text-white">
+                            to reach finish date
+                        </div>
+                    </div>
+                </div>
+
+                <div className="w-full space-y-4">
+                    <Progress
+                        value={progressValue}
+                        className="w-full h-4 rounded-xl"
+                    />
+                    <div className="font-semibold text-white">
+                        {Math.max(0,progressValue)}% has passed 
+                    </div>
+                </div>
             </CardContent>
         </Card>
     );
