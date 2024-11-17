@@ -1,9 +1,7 @@
 import CalendarForm from "@/components/custom/CalendarForm";
 import DayCounter from "@/components/custom/DayCounter";
 import Kanban from "@/components/custom/Kanban";
-import Notes from "@/components/custom/Notes";
 import Stats from "@/components/custom/Stats";
-import TaskCalendar from "@/components/custom/TaskCalendar";
 
 const Home = () => {
     //TODO: FIX LOCAL COMPONENTS RESPONSIVE
@@ -21,14 +19,12 @@ const Home = () => {
                     <DayCounter className="flex-1" />
                 </div>
 
-                <div className="flex flex-col gap-2 w-full lg:w-2/4">
-                    <Kanban className="w-full" />
-                    <TaskCalendar className="w-full" />
+                <div className="flex flex-col gap-2 w-full lg:w-3/4">
+                    <Kanban className="w-full h-full" />
                 </div>
 
                 <div className="flex flex-row gap-2 w-full lg:w-1/4 lg:flex-col">
                     <Stats className="flex-1" />
-                    <Notes className="flex-1" />
                 </div>
             </div>
         </div>

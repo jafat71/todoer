@@ -166,26 +166,24 @@ const Kanban = () => {
             onDragEnd={handleDragEnd}
             onDragStart={handleDragStart}
         >
-            <div className="flex w-full  overflow-x-auto">
+            <div className="flex w-full h-full overflow-x-auto">
                 {Object.entries(columns).map(([columnId, column]) => (
                     <Card
                         key={columnId}
-                        className="flex-1 min-w-[100px] md:min-w-[170px] xl:min-w-[200px] bg-gray-100"
+                        className="flex flex-col flex-1 min-w-[100px] md:min-w-[170px] xl:min-w-[275px] bg-black"
                     >
                         <CardHeader>
-                            <CardTitle>{column.title}</CardTitle>
+                            <CardTitle className="text-white text-2xl">{column.title}</CardTitle>
                         </CardHeader>
-                        <CardContent className="overflow-y-auto p-0">
+                        {/* Hacer que el contenido ocupe todo el espacio disponible */}
+                        <CardContent className="flex-1 overflow-y-hidden p-0">
                             <SortableContext id={columnId} items={column.tasks} strategy={verticalListSortingStrategy}>
-                                <DroppableContainer id={columnId}>
+                                <DroppableContainer id={columnId}
+                                >
                                     {column.tasks.map((task) => (
                                         <SortableItem key={task.id} id={task.id}>
                                             <div className="p-2 w-full my-2 bg-white rounded-md shadow-sm flex flex-col space-y-2">
-                                                {/* Task title section allowing the text to wrap */}
-                                                <div className="text-sm break-words">
-                                                    {task.title}
-                                                </div>
-                                                {/* Action buttons positioned at the bottom of each task item */}
+                                                <div className="text-sm break-words">{task.title}</div>
                                                 <div className="flex justify-end space-x-2">
                                                     <Button
                                                         className="w-8"
@@ -214,10 +212,12 @@ const Kanban = () => {
                                 </DroppableContainer>
                             </SortableContext>
                         </CardContent>
-                        <Button onClick={() => handleAddTaskClick(columnId)} className="m-2">
-                            Add Task
+                        {/* Botón fijo en la parte inferior */}
+                        <Button onClick={() => handleAddTaskClick(columnId)} className="mt-auto bg-white   m-2">
+                            <div className='text-black font-semibold text-lg w-full h-full hover:text-white transition-all duration-300'>Add Task</div>
                         </Button>
                     </Card>
+
                 ))}
             </div>
 
@@ -249,7 +249,7 @@ const Kanban = () => {
 
             <DragOverlay>
                 {activeTask ? (
-                    <div className="p-2 bg-white rounded-md shadow-sm" style={{ opacity: 0.9 }}>
+                    <div className="p-2 bg-white h-full rounded-md shadow-sm" style={{ opacity: 0.9 }}>
                         {activeTask.title}
                     </div>
                 ) : null}
