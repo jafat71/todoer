@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react/prop-types */
+import { fetchTasks } from '@/lib/actions';
 import { getDifferenceBetweenDates } from '@/utils';
 import { createContext, useContext, useEffect, useState } from 'react';
 
@@ -10,6 +11,19 @@ export const TodoerProvider = ({ children }) => {
     const [dates, setDates] = useState();
     const [period, setPeriod] = useState(0);
     const [daysRemaining, setDaysRemaining] = useState(0);
+    const [taks, setTasks] = useState([]);
+
+    //TODO:fetch from backend - GO :=
+    useEffect(() => {
+        fetchTasks()
+            .then(data=>{
+                setTasks(data)
+            })
+            .catch(e=>{
+                console.log(e)
+                setTasks([])
+            })
+    }, []);
 
     const calculatePeriod = () => {
         (dates)
