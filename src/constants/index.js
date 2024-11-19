@@ -1,0 +1,1 @@
+export const KANBAN_COLUMNS = ["TODO","DOING","DONE"]

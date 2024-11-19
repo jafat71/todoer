@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DndContext, closestCenter, DragOverlay } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { DroppableContainer } from './DroppableContainer';
@@ -10,7 +10,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
     AlertDialog,
-    AlertDialogTrigger,
     AlertDialogContent,
     AlertDialogHeader,
     AlertDialogDescription,
@@ -18,37 +17,24 @@ import {
     AlertDialogAction
 } from "@/components/ui/alert-dialog"; // Shadcn Alert Dialog
 import { LucideDelete, LucideEdit2 } from 'lucide-react';
-
-const initialColumns = {
-    todo: {
-        title: 'To Do',
-        tasks: [
-            { id: 'task-1', title: 'Task 1' },
-            { id: 'task-2', title: 'Task 2' },
-        ],
-    },
-    inProgress: {
-        title: 'Going',
-        tasks: [
-            { id: 'task-3', title: 'Task 3' },
-            { id: 'task-4', title: 'Task 4' },
-        ],
-    },
-    done: {
-        title: 'Done',
-        tasks: [
-            { id: 'task-5', title: 'Task 5' },
-        ],
-    },
-};
+import { useTodoerContext } from '@/contexts/AppContext';
 
 const Kanban = () => {
-    const [columns, setColumns] = useState(initialColumns);
+    const {kanbanObject, isLoading, setKanbanObject} = useTodoerContext()
+    const [columns, setColumns] = useState(kanbanObject);
     const [newTaskTitle, setNewTaskTitle] = useState('');
     const [selectedColumn, setSelectedColumn] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
-    const [editTask, setEditTask] = useState(null); // Track the task being edited
+    const [editTask, setEditTask] = useState(null); 
     const [activeTask, setActiveTask] = useState(null);
+
+    useEffect(() => {
+        setColumns(kanbanObject) 
+    }, [kanbanObject]);
+
+    useEffect(() => {
+        setKanbanObject(columns)
+    }, [columns]);
 
     const handleDragEnd = (event) => {
         const { active, over } = event;
@@ -159,6 +145,8 @@ const Kanban = () => {
         setNewTaskTitle(task.title); // Prefill input with task title
         setOpenDialog(true);
     };
+
+    if (isLoading) return <div>loading...</div>
 
     return (
         <DndContext

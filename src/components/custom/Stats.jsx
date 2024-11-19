@@ -1,14 +1,39 @@
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { useTodoerContext } from '@/contexts/AppContext';
+import { useEffect, useState } from 'react';
 
 const Stats = () => {
-    const achieved = 4;
-    const totalGoals = 5;
-    const progressPercentage = Math.round((achieved / totalGoals) * 100);
+    const {kanbanObject} = useTodoerContext()
+
+    const [todo, setTodo] = useState(0);
+    const [doing, setDoing] = useState(0);
+    const [done, setDone] = useState(0);
+    const [total, setTotal] = useState(0);
+    const [progressPercentage, setProgressPercentage] = useState(0);
+    
+    useEffect(() => {
+        const calculateStats = () => {
+            const todoCount = kanbanObject?.TODO?.tasks?.length || 0;
+            const doingCount = kanbanObject?.DOING?.tasks?.length || 0;
+            const doneCount = kanbanObject?.DONE?.tasks?.length || 0;
+            const totalCount = todoCount + doingCount + doneCount;
+            const progress = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
+
+            setTodo(todoCount);
+            setDoing(doingCount);
+            setDone(doneCount);
+            setTotal(totalCount);
+            setProgressPercentage(progress);
+        };
+
+        calculateStats();
+        console.log(kanbanObject)
+    }, [kanbanObject]);
 
     const data = [
-        { name: 'Achieved', value: achieved },
-        { name: 'Remaining', value: totalGoals - achieved },
+        { name: 'Achieved', value: done },
+        { name: 'Remaining', value: doing + todo },
     ];
 
     const COLORS = ['#1c1c1c', '#E0E0E0'];
@@ -25,20 +50,20 @@ const Stats = () => {
 
                     <div className="flex flex-col">
                         <div>
-                            <div className="text-3xl md:text-4xl lg:text-5xl text-black">2</div>
+                            <div className="text-3xl md:text-4xl lg:text-5xl text-black">{todo}</div>
                             <div className="text-black">TO DO</div>
                         </div>
                         <div>
-                            <div className="text-3xl md:text-4xl lg:text-5xl text-black">2</div>
+                            <div className="text-3xl md:text-4xl lg:text-5xl text-black">{doing}</div>
                             <div className="text-black">Doing</div>
                         </div>
                         <div>
-                            <div className="text-3xl md:text-4xl lg:text-5xl text-black">2</div>
+                            <div className="text-3xl md:text-4xl lg:text-5xl text-black">{done}</div>
                             <div className="text-black">Done</div>
                         </div>
                     </div>
                     <div className="flex flex-col items-center justify-center">
-                        <div className="text-5xl md:text-6xl lg:text-8xl text-black">6</div>
+                        <div className="text-5xl md:text-6xl lg:text-8xl text-black">{total}</div>
                         <div className="text-black">In total</div>
                     </div>
                 </div>

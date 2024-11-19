@@ -2,10 +2,13 @@ import CalendarForm from "@/components/custom/CalendarForm";
 import DayCounter from "@/components/custom/DayCounter";
 import Kanban from "@/components/custom/Kanban";
 import Stats from "@/components/custom/Stats";
+import { useTodoerContext } from "@/contexts/AppContext";
 
 const Home = () => {
     //TODO: FIX LOCAL COMPONENTS RESPONSIVE
     //TODO: ADD CONTEXT
+    const {isLoading} = useTodoerContext()
+    if(isLoading) return <div>Loading...</div> 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center px-4">
             <h2 className="text-6xl font-semibold mb-4">TODOER</h2>
