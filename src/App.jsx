@@ -1,15 +1,21 @@
-import { TodoerProvider } from "./contexts/AppContext";
+import Navbar from "./components/custom/Header/Navbar";
+import { TodoerProvider } from "./contexts/TodoerContext/TodoerContext";
+import { UserProvider } from "./contexts/UserContext/UserContext";
 import AppRouter from "./routes";
 import { Toaster } from "@/components/ui/toaster"
 
 const App = () => {
+
   return (
-    <TodoerProvider>
-      <div className="max-w-8xl mx-auto flex items-center justify-center ">
-        <AppRouter />
-        <Toaster />
-      </div>
-    </TodoerProvider>
+    <UserProvider>
+      <TodoerProvider>
+        <div className=" bg-voidBlack">
+          <Navbar/>
+            <AppRouter />
+          <Toaster />
+        </div>
+      </TodoerProvider>
+    </UserProvider>
   );
 };
 

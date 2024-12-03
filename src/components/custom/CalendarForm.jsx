@@ -20,7 +20,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useTodoerContext } from "@/contexts/AppContext";
+import { useTodoerContext } from "@/contexts/TodoerContext/TodoerContext";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"; // Import Card components
 import { useEffect } from "react";
 

@@ -1,6 +1,6 @@
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { useTodoerContext } from '@/contexts/AppContext';
+import { useTodoerContext } from '@/contexts/TodoerContext/TodoerContext';
 import { useEffect, useState } from 'react';
 
 const Stats = () => {

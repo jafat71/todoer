@@ -1,6 +1,6 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { useTodoerContext } from "@/contexts/AppContext";
+import { useTodoerContext } from "@/contexts/TodoerContext/TodoerContext";
 
 const DayCounter = () => {
     const { daysRemaining, period: totalDays } = useTodoerContext();

@@ -17,7 +17,7 @@ import {
     AlertDialogAction
 } from "@/components/ui/alert-dialog"; // Shadcn Alert Dialog
 import { LucideDelete, LucideEdit2 } from 'lucide-react';
-import { useTodoerContext } from '@/contexts/AppContext';
+import { useTodoerContext } from '@/contexts/TodoerContext/TodoerContext';
 
 const Kanban = () => {
     const {kanbanObject, isLoading, setKanbanObject} = useTodoerContext()
