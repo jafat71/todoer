@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
 import { DndContext, closestCenter, DragOverlay } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -19,8 +20,8 @@ import {
 import { LucideDelete, LucideEdit2 } from 'lucide-react';
 import { useTodoerContext } from '@/contexts/TodoerContext/TodoerContext';
 
-const Kanban = () => {
-    const {kanbanObject, isLoading, setKanbanObject} = useTodoerContext()
+const Kanban = ({kanbanObject, setKanbanObject}) => {
+    const {isLoading} = useTodoerContext()
     const [columns, setColumns] = useState(kanbanObject);
     const [newTaskTitle, setNewTaskTitle] = useState('');
     const [selectedColumn, setSelectedColumn] = useState(null);

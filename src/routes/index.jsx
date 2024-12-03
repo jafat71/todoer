@@ -4,7 +4,7 @@ import Home from '../pages/Home';
 import KanbanBoard from '@/pages/KanbanBoard';
 const AppRouter = () => {
   return (
-    <Router>
+    <Router >
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/kanban" element={<KanbanBoard />} />

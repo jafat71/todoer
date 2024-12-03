@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster"
 
 const App = () => {
 
+  //TODO:FOOTER + CUSTOMIZE SHAD}CN STYLES + CONNECT TASKS WITH GO
   return (
     <UserProvider>
       <TodoerProvider>

@@ -2,10 +2,11 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react/prop-types */
 import { KANBAN_COLUMNS } from '@/constants';
-import { fetchTasks } from '@/lib/actions';
+import { fetchExampleTasks, fetchUserTasks } from '@/lib/actions';
 import { getDifferenceBetweenDates } from '@/utils';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { transformDatafromAPI } from './TodoerContextActions';
+import { useUserContext } from '../UserContext/UserContext';
 
 const TodoerContext = createContext();
 
@@ -15,11 +16,18 @@ export const TodoerProvider = ({ children }) => {
     const [daysRemaining, setDaysRemaining] = useState(0);
     const [kanbanObject, setKanbanObject] = useState({});
     const [isLoading, setisLoading] = useState(true);
+
+    const {isLogged} = useUserContext()
     //TODO:fetch from backend - GO :=
     useEffect(() => {
         (async () =>  {
             try {
-                const data = await fetchTasks(); 
+                let data = []
+                if(isLogged){
+                    data = await fetchExampleTasks(); 
+                }else {
+                    data = await fetchUserTasks()
+                }
                 const transformedData = await transformDatafromAPI(KANBAN_COLUMNS, data); 
                 setKanbanObject(transformedData); 
             } catch (error) {

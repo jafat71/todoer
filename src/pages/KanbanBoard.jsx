@@ -5,7 +5,7 @@ import Stats from "@/components/custom/Stats";
 import { useTodoerContext } from "@/contexts/TodoerContext/TodoerContext";
 
 const KanbanBoard = () => {
-    const {isLoading} = useTodoerContext()
+    const {isLoading, kanbanObject, setKanbanObject} = useTodoerContext()
     if(isLoading) return <div>Loading...</div> 
     return (
         <>
@@ -22,7 +22,10 @@ const KanbanBoard = () => {
                     </div>
 
                     <div className="flex flex-col gap-2 w-full lg:w-3/4">
-                        <Kanban className="w-full h-full" />
+                        <Kanban className="w-full h-full" 
+                            kanbanObject={kanbanObject}
+                            setKanbanObject={setKanbanObject}
+                        />
                     </div>
 
                     <div className="flex flex-row gap-2 w-full lg:w-1/4 lg:flex-col">
