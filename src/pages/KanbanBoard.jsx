@@ -1,12 +1,24 @@
 import CalendarForm from "@/components/custom/CalendarForm";
 import DayCounter from "@/components/custom/DayCounter";
-import Kanban from "@/components/custom/Kanban";
+import Kanban from "@/components/custom/KanbanBoard/Kanban";
 import Stats from "@/components/custom/Stats";
 import { useTodoerContext } from "@/contexts/TodoerContext/TodoerContext";
+import { fetchUserTasks } from "@/lib/actions";
+import { useEffect } from "react";
 
 const KanbanBoard = () => {
-    const {isLoading, kanbanObject, setKanbanObject} = useTodoerContext()
-    if(isLoading) return <div>Loading...</div> 
+    const {setKanbanBoard} = useTodoerContext()
+    const getBoardData = async () => {
+        const data = await fetchUserTasks()
+        if (data.success){
+            setKanbanBoard(data.tasks)
+        }
+    }    
+    useEffect(() => {
+        (async () =>  {
+            await getBoardData()
+        })()     
+    }, []);
     return (
         <>
             <div className="min-h-screen flex flex-col items-center justify-center px-4">
@@ -22,10 +34,7 @@ const KanbanBoard = () => {
                     </div>
 
                     <div className="flex flex-col gap-2 w-full lg:w-3/4">
-                        <Kanban className="w-full h-full" 
-                            kanbanObject={kanbanObject}
-                            setKanbanObject={setKanbanObject}
-                        />
+                        <Kanban className="w-full h-full" />
                     </div>
 
                     <div className="flex flex-row gap-2 w-full lg:w-1/4 lg:flex-col">

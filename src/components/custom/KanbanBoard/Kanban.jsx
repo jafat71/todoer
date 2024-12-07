@@ -1,40 +1,44 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from 'react';
-import { DndContext, closestCenter, DragOverlay } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { DroppableContainer } from './DroppableContainer';
-import { SortableItem } from './SortableItem';
-import { v4 as uuidv4 } from 'uuid';
+import { useEffect, useState } from "react";
+import { DndContext, closestCenter, DragOverlay } from "@dnd-kit/core";
+import {
+    SortableContext,
+    verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { DroppableContainer } from "./DroppableContainer";
+import { SortableItem } from "./SortableItem";
+import { v4 as uuidv4 } from "uuid";
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
     AlertDialog,
     AlertDialogContent,
     AlertDialogHeader,
     AlertDialogDescription,
     AlertDialogFooter,
-    AlertDialogAction
+    AlertDialogAction,
 } from "@/components/ui/alert-dialog"; // Shadcn Alert Dialog
-import { LucideDelete, LucideEdit2 } from 'lucide-react';
-import { useTodoerContext } from '@/contexts/TodoerContext/TodoerContext';
+import { LucideDelete, LucideEdit2 } from "lucide-react";
+import { useTodoerContext } from "@/contexts/TodoerContext/TodoerContext";
+import SkeletonColumn from "./SkeletonColumn";
 
-const Kanban = ({kanbanObject, setKanbanObject}) => {
-    const {isLoading} = useTodoerContext()
+const Kanban = () => {
+    const { isLoading, setKanbanObject,kanbanObject } = useTodoerContext();
     const [columns, setColumns] = useState(kanbanObject);
-    const [newTaskTitle, setNewTaskTitle] = useState('');
+    const [newTaskTitle, setNewTaskTitle] = useState("");
     const [selectedColumn, setSelectedColumn] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
-    const [editTask, setEditTask] = useState(null); 
+    const [editTask, setEditTask] = useState(null);
     const [activeTask, setActiveTask] = useState(null);
 
     useEffect(() => {
-        setColumns(kanbanObject) 
+        setColumns(kanbanObject);
     }, [kanbanObject]);
 
     useEffect(() => {
-        setKanbanObject(columns)
+        setKanbanObject(columns);
     }, [columns]);
 
     const handleDragEnd = (event) => {
@@ -46,7 +50,11 @@ const Kanban = ({kanbanObject, setKanbanObject}) => {
         );
         const destinationColumnId = over.id;
 
-        if (sourceColumnId && destinationColumnId && sourceColumnId !== destinationColumnId) {
+        if (
+            sourceColumnId &&
+            destinationColumnId &&
+            sourceColumnId !== destinationColumnId
+        ) {
             const sourceTasks = columns[sourceColumnId].tasks;
             const destinationTasks = columns[destinationColumnId].tasks;
             const movedTask = sourceTasks.find((task) => task.id === active.id);
@@ -69,9 +77,13 @@ const Kanban = ({kanbanObject, setKanbanObject}) => {
 
     const handleDragStart = (event) => {
         const { active } = event;
-        setActiveTask(columns[Object.keys(columns).find((columnId) =>
-            columns[columnId].tasks.find((task) => task.id === active.id)
-        )].tasks.find((task) => task.id === active.id));
+        setActiveTask(
+            columns[
+                Object.keys(columns).find((columnId) =>
+                    columns[columnId].tasks.find((task) => task.id === active.id)
+                )
+            ].tasks.find((task) => task.id === active.id)
+        );
     };
 
     const addNewTask = () => {
@@ -93,11 +105,11 @@ const Kanban = ({kanbanObject, setKanbanObject}) => {
                 };
             });
 
-            setNewTaskTitle('');
+            setNewTaskTitle("");
             setOpenDialog(false);
             setEditTask(null);
         } else {
-            alert('Please enter a task title and select a column.');
+            alert("Please enter a task title and select a column.");
         }
     };
 
@@ -117,7 +129,7 @@ const Kanban = ({kanbanObject, setKanbanObject}) => {
                 };
             });
 
-            setNewTaskTitle('');
+            setNewTaskTitle("");
             setOpenDialog(false);
             setEditTask(null);
         }
@@ -136,7 +148,7 @@ const Kanban = ({kanbanObject, setKanbanObject}) => {
     const handleAddTaskClick = (columnId) => {
         setSelectedColumn(columnId);
         setEditTask(null); // Ensure edit mode is off
-        setNewTaskTitle(''); // Clear input for new task
+        setNewTaskTitle(""); // Clear input for new task
         setOpenDialog(true);
     };
 
@@ -147,7 +159,10 @@ const Kanban = ({kanbanObject, setKanbanObject}) => {
         setOpenDialog(true);
     };
 
-    if (isLoading) return <div>loading...</div>
+    if (isLoading || !kanbanObject)
+        return (
+            <SkeletonColumn/>
+        );
 
     return (
         <DndContext
@@ -159,16 +174,20 @@ const Kanban = ({kanbanObject, setKanbanObject}) => {
                 {Object.entries(columns).map(([columnId, column]) => (
                     <Card
                         key={columnId}
-                        className="flex flex-col flex-1 min-w-[100px] md:min-w-[170px] xl:min-w-[275px] bg-black"
+                        className="flex flex-col flex-1 min-w-[100px] md:min-w-[170px] xl:min-w-[275px] bg-voidBlack"
                     >
                         <CardHeader>
-                            <CardTitle className="text-white text-2xl">{column.title}</CardTitle>
+                            <CardTitle className="text-f2green text-2xl">
+                                {column.title}
+                            </CardTitle>
                         </CardHeader>
-                        {/* Hacer que el contenido ocupe todo el espacio disponible */}
                         <CardContent className="flex-1 overflow-y-hidden p-0">
-                            <SortableContext id={columnId} items={column.tasks} strategy={verticalListSortingStrategy}>
-                                <DroppableContainer id={columnId}
-                                >
+                            <SortableContext
+                                id={columnId}
+                                items={column.tasks}
+                                strategy={verticalListSortingStrategy}
+                            >
+                                <DroppableContainer id={columnId}>
                                     {column.tasks.map((task) => (
                                         <SortableItem key={task.id} id={task.id}>
                                             <div className="p-2 w-full my-2 bg-white rounded-md shadow-sm flex flex-col space-y-2">
@@ -201,19 +220,24 @@ const Kanban = ({kanbanObject, setKanbanObject}) => {
                                 </DroppableContainer>
                             </SortableContext>
                         </CardContent>
-                        {/* Botón fijo en la parte inferior */}
-                        <Button onClick={() => handleAddTaskClick(columnId)} className="mt-auto bg-white   m-2">
-                            <div className='text-black font-semibold text-lg w-full h-full hover:text-white transition-all duration-300'>Add Task</div>
+                        <Button
+                            onClick={() => handleAddTaskClick(columnId)}
+                            className="mt-auto bg-fgreen hover:text-white transition-all duration-300  m-2"
+                        >
+                            <div className="text-black font-semibold text-lg w-full h-full ">
+                                Add Task
+                            </div>
                         </Button>
                     </Card>
-
                 ))}
             </div>
 
             <AlertDialog open={openDialog} onOpenChange={setOpenDialog}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <h3 className="text-lg font-semibold">{editTask ? 'Edit Task' : 'Add New Task'}</h3>
+                        <h3 className="text-lg font-semibold">
+                            {editTask ? "Edit Task" : "Add New Task"}
+                        </h3>
                     </AlertDialogHeader>
 
                     <AlertDialogDescription>
@@ -229,16 +253,21 @@ const Kanban = ({kanbanObject, setKanbanObject}) => {
 
                     <AlertDialogFooter>
                         <AlertDialogAction onClick={editTask ? updateTask : addNewTask}>
-                            {editTask ? 'Update Task' : 'Add Task'}
+                            {editTask ? "Update Task" : "Add Task"}
                         </AlertDialogAction>
-                        <Button onClick={() => setOpenDialog(false)} variant="outline">Cancel</Button>
+                        <Button onClick={() => setOpenDialog(false)} variant="outline">
+                            Cancel
+                        </Button>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
 
             <DragOverlay>
                 {activeTask ? (
-                    <div className="p-2 bg-white h-full rounded-md shadow-sm" style={{ opacity: 0.9 }}>
+                    <div
+                        className="p-2 bg-white h-full rounded-md shadow-sm"
+                        style={{ opacity: 0.9 }}
+                    >
                         {activeTask.title}
                     </div>
                 ) : null}

@@ -6,7 +6,6 @@ import { fetchExampleTasks, fetchUserTasks } from '@/lib/actions';
 import { getDifferenceBetweenDates } from '@/utils';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { transformDatafromAPI } from './TodoerContextActions';
-import { useUserContext } from '../UserContext/UserContext';
 
 const TodoerContext = createContext();
 
@@ -17,27 +16,38 @@ export const TodoerProvider = ({ children }) => {
     const [kanbanObject, setKanbanObject] = useState({});
     const [isLoading, setisLoading] = useState(true);
 
-    const {isLogged} = useUserContext()
-    //TODO:fetch from backend - GO :=
-    useEffect(() => {
-        (async () =>  {
-            try {
-                let data = []
-                if(isLogged){
-                    data = await fetchExampleTasks(); 
-                }else {
-                    data = await fetchUserTasks()
-                }
-                const transformedData = await transformDatafromAPI(KANBAN_COLUMNS, data); 
-                setKanbanObject(transformedData); 
-            } catch (error) {
-                console.error("Error fetching tasks:", error);
-                const fallbackData = transformDatafromAPI(KANBAN_COLUMNS, []);
-                setKanbanObject(fallbackData);
-            }
-            setisLoading(false)
-        })()
-    }, []);
+    const setNoLoggeKanbanBoard =  async () => {
+        setisLoading(true)
+        try {
+            let data = []
+            data = await fetchExampleTasks(); 
+            const transformedData = await transformDatafromAPI(KANBAN_COLUMNS, data); 
+            setKanbanObject(transformedData); 
+        } catch (error) {
+            console.error("Error fetching tasks:", error);
+            const fallbackData = transformDatafromAPI(KANBAN_COLUMNS, []);
+            setKanbanObject(fallbackData);
+        } finally {
+            setTimeout(() => {
+                setisLoading(false)
+                
+            }, 1000);
+        }
+    }
+
+    const setKanbanBoard = async (data = []) => {
+        try {
+            const transformedData = await transformDatafromAPI(KANBAN_COLUMNS, data); 
+            setKanbanObject(transformedData); 
+        } catch (error) {
+            const fallbackData = transformDatafromAPI(KANBAN_COLUMNS, []);
+            setKanbanObject(fallbackData);
+        }finally {
+            setTimeout(() => {
+                setisLoading(false)
+            }, 1000);
+        }
+    }
 
     const calculatePeriod = () => {
         (dates)
@@ -65,7 +75,9 @@ export const TodoerProvider = ({ children }) => {
             period,
             kanbanObject,
             setKanbanObject,
-            isLoading
+            isLoading,
+            setKanbanBoard,
+            setNoLoggeKanbanBoard
         }}>
             {children}
         </TodoerContext.Provider>

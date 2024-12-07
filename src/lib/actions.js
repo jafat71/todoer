@@ -1,3 +1,4 @@
+
 const noLoggedExampleTasks = [
     { id: 'task-1', title: 'Water the plants 🌱', doing: true, done: false },
     { id: 'task-2', title: 'Go for a run 🏃‍♂️', doing: false, done: false },
@@ -9,12 +10,12 @@ const noLoggedExampleTasks = [
 ];
 
 export const fetchExampleTasks = async () => {
-    await new Promise(resolve => setTimeout(resolve, 0))
+    await new Promise(resolve => setTimeout(resolve, 1000))
     return noLoggedExampleTasks
 }
 
-export const fetchUserTasks = async (id) => {
-    console.log("FETCHING USER " + id + " TASKS")
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    return noLoggedExampleTasks
+const BACKEND_URL =  import.meta.env.VITE_BACKEND_URL
+export const fetchUserTasks = async () => {
+    const data = await fetch(BACKEND_URL+"/tasks")
+    return data.json()
 }
