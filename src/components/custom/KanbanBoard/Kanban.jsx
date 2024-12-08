@@ -1,65 +1,70 @@
-/* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
+import { useState, useCallback } from "react";
 import { DndContext, closestCenter, DragOverlay } from "@dnd-kit/core";
-import {
-    SortableContext,
-    verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { DroppableContainer } from "./DroppableContainer";
 import { SortableItem } from "./SortableItem";
-import { v4 as uuidv4 } from "uuid";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-    AlertDialog,
-    AlertDialogContent,
-    AlertDialogHeader,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogAction,
-} from "@/components/ui/alert-dialog"; // Shadcn Alert Dialog
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogDescription, AlertDialogFooter, AlertDialogAction } from "@/components/ui/alert-dialog";
 import { LucideDelete, LucideEdit2 } from "lucide-react";
 import { useTodoerContext } from "@/contexts/TodoerContext/TodoerContext";
 import SkeletonColumn from "./SkeletonColumn";
+import { addUserTask, deleteUserTask, updateUserTask } from "@/lib/actions";
+import { AlertDialogTitle } from "@radix-ui/react-alert-dialog";
 
 const Kanban = () => {
-    const { isLoading, setKanbanObject,kanbanObject } = useTodoerContext();
-    const [columns, setColumns] = useState(kanbanObject);
+    const { isLoading, kanbanObject, setKanbanObject } = useTodoerContext();
     const [newTaskTitle, setNewTaskTitle] = useState("");
     const [selectedColumn, setSelectedColumn] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
     const [editTask, setEditTask] = useState(null);
     const [activeTask, setActiveTask] = useState(null);
 
-    useEffect(() => {
-        setColumns(kanbanObject);
-    }, [kanbanObject]);
+    const buildTaskBodyFromColumn = (task,columnId) => {
+        let tempTask = {
+            title: task.title,
+            doing: false,
+            done: false,
+        };
+        switch (columnId) {
+            case "TODO":
+                tempTask.doing = false;
+                tempTask.done = false;
+                break;
+            case "DOING":
+                tempTask.doing = true;
+                tempTask.done = false;
+                break;
+            case "DONE":
+                tempTask.doing = false;
+                tempTask.done = true;
+                break;
+            default:
+                break;
+        }
+        return tempTask;
+    }
 
-    useEffect(() => {
-        setKanbanObject(columns);
-    }, [columns]);
+    const handleAddTask = useCallback(async (task, columnId) => {
+        const tmpTask = buildTaskBodyFromColumn(task,columnId);
+        return await addUserTask(tmpTask);
+    }, []);
 
-    const handleDragEnd = (event) => {
+    const handleDragEnd = useCallback(async (event) => {
         const { active, over } = event;
         if (!over) return;
 
-        const sourceColumnId = Object.keys(columns).find((columnId) =>
-            columns[columnId].tasks.find((task) => task.id === active.id)
+        const sourceColumnId = Object.keys(kanbanObject).find((columnId) =>
+            kanbanObject[columnId].tasks.find((task) => task.id === active.id)
         );
         const destinationColumnId = over.id;
 
-        if (
-            sourceColumnId &&
-            destinationColumnId &&
-            sourceColumnId !== destinationColumnId
-        ) {
-            const sourceTasks = columns[sourceColumnId].tasks;
-            const destinationTasks = columns[destinationColumnId].tasks;
+        if (sourceColumnId && destinationColumnId && sourceColumnId !== destinationColumnId) {
+            const sourceTasks = kanbanObject[sourceColumnId].tasks;
+            const destinationTasks = kanbanObject[destinationColumnId].tasks;
             const movedTask = sourceTasks.find((task) => task.id === active.id);
-
-            setColumns((prev) => ({
+            setKanbanObject((prev) => ({
                 ...prev,
                 [sourceColumnId]: {
                     ...prev[sourceColumnId],
@@ -70,40 +75,57 @@ const Kanban = () => {
                     tasks: [...destinationTasks, movedTask],
                 },
             }));
+            let tmpMovedTask = buildTaskBodyFromColumn(movedTask,destinationColumnId);
+            tmpMovedTask.id = movedTask.id;
+            try {
+                await updateUserTask(tmpMovedTask);   
+            } catch (error) {
+                console.log(error);
+                alert(error);
+            }
         }
 
         setActiveTask(null);
-    };
+    }, [kanbanObject, setKanbanObject]);
 
-    const handleDragStart = (event) => {
+    const handleDragStart = useCallback((event) => {
         const { active } = event;
         setActiveTask(
-            columns[
-                Object.keys(columns).find((columnId) =>
-                    columns[columnId].tasks.find((task) => task.id === active.id)
+            kanbanObject[
+                Object.keys(kanbanObject).find((columnId) =>
+                    kanbanObject[columnId].tasks.find((task) => task.id === active.id)
                 )
             ].tasks.find((task) => task.id === active.id)
         );
-    };
+    }, [kanbanObject]);
 
-    const addNewTask = () => {
+    const addNewTask = async () => {
         if (newTaskTitle && selectedColumn) {
-            const newTask = {
-                id: uuidv4(),
-                title: newTaskTitle,
-            };
+            const newTask = { title: newTaskTitle };
+            const columnId = Object.keys(kanbanObject).find((columnId) => columnId === selectedColumn);
+            try {
+                const addedTaskResponse = await handleAddTask(newTask, columnId);
 
-            setColumns((prevColumns) => {
-                const updatedTasks = [...prevColumns[selectedColumn].tasks, newTask];
+                if (addedTaskResponse && addedTaskResponse.success) {
+                    setKanbanObject((prevColumns) => {
+                        const updatedTasks = [...prevColumns[selectedColumn].tasks, addedTaskResponse.task];
 
-                return {
-                    ...prevColumns,
-                    [selectedColumn]: {
-                        ...prevColumns[selectedColumn],
-                        tasks: updatedTasks,
-                    },
-                };
-            });
+                        return {
+                            ...prevColumns,
+                            [selectedColumn]: {
+                                ...prevColumns[selectedColumn],
+                                tasks: updatedTasks,
+                            },
+                        };
+                    });
+                }
+            } catch (error) {
+                let errorMessage = "Error adding task: \n";
+                error.forEach(err => {
+                    errorMessage += err.message + "\n";
+                });
+                alert(errorMessage);
+            }
 
             setNewTaskTitle("");
             setOpenDialog(false);
@@ -113,21 +135,37 @@ const Kanban = () => {
         }
     };
 
-    const updateTask = () => {
+    const updateTask = async () => {
         if (editTask && selectedColumn) {
-            setColumns((prevColumns) => {
-                const updatedTasks = prevColumns[selectedColumn].tasks.map((task) =>
-                    task.id === editTask.id ? { ...task, title: newTaskTitle } : task
-                );
+            let tmpTask = { 
+                ...editTask,
+                title: newTaskTitle,
+            };
+            try {
+                const updatedTaskResponse = await updateUserTask(tmpTask);
 
-                return {
-                    ...prevColumns,
-                    [selectedColumn]: {
-                        ...prevColumns[selectedColumn],
-                        tasks: updatedTasks,
-                    },
-                };
-            });
+                if (updatedTaskResponse && updatedTaskResponse.success) {
+                    setKanbanObject((prevColumns) => {
+                        const updatedTasks = prevColumns[selectedColumn].tasks.map((task) =>
+                            task.id === editTask.id ? updatedTaskResponse.task : task
+                        );
+
+                        return {
+                            ...prevColumns,
+                            [selectedColumn]: {
+                                ...prevColumns[selectedColumn],
+                                tasks: updatedTasks,
+                            },
+                        };
+                    });
+                }
+            } catch (error) {
+                let errorMessage = "Error updating task: \n";
+                error.forEach(err => {
+                    errorMessage += err.message + "\n";
+                });
+                alert(errorMessage);
+            }
 
             setNewTaskTitle("");
             setOpenDialog(false);
@@ -135,34 +173,37 @@ const Kanban = () => {
         }
     };
 
-    const deleteTask = (taskId, columnId) => {
-        setColumns((prevColumns) => ({
+    const deleteTask = useCallback(async (taskId, columnId) => {
+        setKanbanObject((prevColumns) => ({
             ...prevColumns,
             [columnId]: {
                 ...prevColumns[columnId],
                 tasks: prevColumns[columnId].tasks.filter((task) => task.id !== taskId),
             },
         }));
-    };
+        try {
+            await deleteUserTask(taskId);
+        } catch (error) {
+            console.log(error);
+            alert(error);
+        }
+    }, [setKanbanObject]);
 
     const handleAddTaskClick = (columnId) => {
         setSelectedColumn(columnId);
-        setEditTask(null); // Ensure edit mode is off
-        setNewTaskTitle(""); // Clear input for new task
+        setEditTask(null);
+        setNewTaskTitle("");
         setOpenDialog(true);
     };
 
     const handleEditTaskClick = (task, columnId) => {
         setSelectedColumn(columnId);
         setEditTask(task);
-        setNewTaskTitle(task.title); // Prefill input with task title
+        setNewTaskTitle(task.title);
         setOpenDialog(true);
     };
 
-    if (isLoading || !kanbanObject)
-        return (
-            <SkeletonColumn/>
-        );
+    if (isLoading || !kanbanObject) return <SkeletonColumn />;
 
     return (
         <DndContext
@@ -171,7 +212,7 @@ const Kanban = () => {
             onDragStart={handleDragStart}
         >
             <div className="flex w-full h-full overflow-x-auto">
-                {Object.entries(columns).map(([columnId, column]) => (
+                {Object.entries(kanbanObject).map(([columnId, column]) => (
                     <Card
                         key={columnId}
                         className="flex flex-col flex-1 min-w-[100px] md:min-w-[170px] xl:min-w-[275px] bg-voidBlack"
@@ -233,6 +274,9 @@ const Kanban = () => {
             </div>
 
             <AlertDialog open={openDialog} onOpenChange={setOpenDialog}>
+                <AlertDialogTitle>
+                    {editTask ? "Edit Task" : "Add New Task"}
+                </AlertDialogTitle>
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <h3 className="text-lg font-semibold">
@@ -241,21 +285,19 @@ const Kanban = () => {
                     </AlertDialogHeader>
 
                     <AlertDialogDescription>
-                        <div className="space-y-2">
-                            <Input
-                                type="text"
-                                placeholder="Task title"
-                                value={newTaskTitle}
-                                onChange={(e) => setNewTaskTitle(e.target.value)}
-                            />
-                        </div>
+                        <Input
+                            type="text"
+                            placeholder="Task title"
+                            value={newTaskTitle}
+                            onChange={(e) => setNewTaskTitle(e.target.value)}
+                        />
                     </AlertDialogDescription>
 
                     <AlertDialogFooter>
                         <AlertDialogAction onClick={editTask ? updateTask : addNewTask}>
                             {editTask ? "Update Task" : "Add Task"}
                         </AlertDialogAction>
-                        <Button onClick={() => setOpenDialog(false)} variant="outline">
+                        <Button className="bg-voidBlack hover:text-voidBlack transition-all duration-300" onClick={() => setOpenDialog(false)} variant="outline">
                             Cancel
                         </Button>
                     </AlertDialogFooter>

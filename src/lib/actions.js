@@ -1,3 +1,5 @@
+import axios from "axios";
+const BACKEND_URL =  import.meta.env.VITE_BACKEND_URL
 
 const noLoggedExampleTasks = [
     { id: 'task-1', title: 'Water the plants 🌱', doing: true, done: false },
@@ -14,8 +16,51 @@ export const fetchExampleTasks = async () => {
     return noLoggedExampleTasks
 }
 
-const BACKEND_URL =  import.meta.env.VITE_BACKEND_URL
 export const fetchUserTasks = async () => {
-    const data = await fetch(BACKEND_URL+"/tasks")
-    return data.json()
+    try { 
+        const data = await axios.get(BACKEND_URL+"/tasks")
+        return data.data
+    } catch (error) {
+        console.error("Error fetching user tasks:", error);
+        return [];
+    }
 }
+
+export const addUserTask = async (task) => {
+    try {  
+        const response = await axios.post(BACKEND_URL + "/tasks", task);
+        return response.data;
+    } catch (error) {
+        console.error("Error adding user task:", error);
+        if (error.response && error.response.data) {
+            throw error.response.data.errors;
+        } else {
+            throw error;
+        }
+    }
+}
+
+export const deleteUserTask = async (taskId) => {
+    try {
+        const data = await axios.delete(BACKEND_URL+"/tasks/"+taskId)
+        return data.data
+    } catch (error) {
+        console.error("Error deleting user task:", error);
+        return null;
+    }
+}
+
+export const updateUserTask = async (task) => {
+    try {
+        const data = await axios.put(BACKEND_URL+"/tasks/"+task.id, task)
+        return data.data
+    } catch (error) {
+        console.log(error);
+        if (error.response && error.response.data) {
+            throw error.response.data.errors;
+        } else {
+            throw error;
+        }
+    }
+}
+

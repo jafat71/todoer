@@ -28,7 +28,6 @@ const Stats = () => {
         };
 
         calculateStats();
-        console.log(kanbanObject)
     }, [kanbanObject]);
 
     const data = [
