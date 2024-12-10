@@ -16,16 +16,16 @@ export const TodoerProvider = ({ children }) => {
     const [kanbanObject, setKanbanObject] = useState({});
     const [isLoading, setisLoading] = useState(true);
 
-    const setNoLoggeKanbanBoard =  async () => {
+    const setNoLoggeKanbanBoard =  async (columns = KANBAN_COLUMNS) => {
         setisLoading(true)
         try {
             let data = []
             data = await fetchExampleTasks(); 
-            const transformedData = await transformDatafromAPI(KANBAN_COLUMNS, data); 
+            const transformedData = await transformDatafromAPI(columns, data); 
             setKanbanObject(transformedData); 
         } catch (error) {
             console.error("Error fetching tasks:", error);
-            const fallbackData = transformDatafromAPI(KANBAN_COLUMNS, []);
+            const fallbackData = transformDatafromAPI(columns, []);
             setKanbanObject(fallbackData);
         } finally {
             setTimeout(() => {
@@ -35,12 +35,12 @@ export const TodoerProvider = ({ children }) => {
         }
     }
 
-    const setKanbanBoard = async (data = []) => {
+    const setKanbanBoard = async (data = [], columns = KANBAN_COLUMNS) => {
         try {
-            const transformedData = await transformDatafromAPI(KANBAN_COLUMNS, data); 
+            const transformedData = await transformDatafromAPI(columns, data); 
             setKanbanObject(transformedData); 
         } catch (error) {
-            const fallbackData = transformDatafromAPI(KANBAN_COLUMNS, []);
+            const fallbackData = transformDatafromAPI(columns, []);
             setKanbanObject(fallbackData);
         }finally {
             setTimeout(() => {

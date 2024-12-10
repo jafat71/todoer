@@ -5,13 +5,12 @@ import { DroppableContainer } from "./DroppableContainer";
 import { SortableItem } from "./SortableItem";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogDescription, AlertDialogFooter, AlertDialogAction } from "@/components/ui/alert-dialog";
-import { LucideDelete, LucideEdit2 } from "lucide-react";
 import { useTodoerContext } from "@/contexts/TodoerContext/TodoerContext";
 import SkeletonColumn from "./SkeletonColumn";
 import { addUserTask, deleteUserTask, updateUserTask } from "@/lib/actions";
-import { AlertDialogTitle } from "@radix-ui/react-alert-dialog";
+import { getPriorityColor, KANBAN_COLUMNS, PRIORITY_OPTIONS } from "@/constants";
+import { LucideDelete, LucideEdit2 } from "lucide-react";
+import KanbanItemAlertDialog from "./KanbanItemAlertDialog";
 
 const Kanban = () => {
     const { isLoading, kanbanObject, setKanbanObject } = useTodoerContext();
@@ -20,25 +19,24 @@ const Kanban = () => {
     const [openDialog, setOpenDialog] = useState(false);
     const [editTask, setEditTask] = useState(null);
     const [activeTask, setActiveTask] = useState(null);
+    const [currentTask, setCurrentTask] = useState(null);
+    const [selectedPriority, setSelectedPriority] = useState(PRIORITY_OPTIONS[0]);
 
-    const buildTaskBodyFromColumn = (task,columnId) => {
+    const buildTaskBodyFromColumn = (columns,task,columnId) => {
         let tempTask = {
             title: task.title,
-            doing: false,
-            done: false,
+            status: columns[0],
+            priority: task.priority,
         };
-        switch (columnId) {
-            case "TODO":
-                tempTask.doing = false;
-                tempTask.done = false;
+        switch (columnId) { 
+            case columns[0]:
+                tempTask.status = columns[0];
                 break;
-            case "DOING":
-                tempTask.doing = true;
-                tempTask.done = false;
+            case columns[1]:
+                tempTask.status = columns[1];
                 break;
-            case "DONE":
-                tempTask.doing = false;
-                tempTask.done = true;
+            case columns[2]:
+                tempTask.status = columns[2];
                 break;
             default:
                 break;
@@ -47,7 +45,7 @@ const Kanban = () => {
     }
 
     const handleAddTask = useCallback(async (task, columnId) => {
-        const tmpTask = buildTaskBodyFromColumn(task,columnId);
+        const tmpTask = buildTaskBodyFromColumn(KANBAN_COLUMNS,task,columnId);
         return await addUserTask(tmpTask);
     }, []);
 
@@ -64,6 +62,7 @@ const Kanban = () => {
             const sourceTasks = kanbanObject[sourceColumnId].tasks;
             const destinationTasks = kanbanObject[destinationColumnId].tasks;
             const movedTask = sourceTasks.find((task) => task.id === active.id);
+            movedTask.status = destinationColumnId;
             setKanbanObject((prev) => ({
                 ...prev,
                 [sourceColumnId]: {
@@ -75,7 +74,7 @@ const Kanban = () => {
                     tasks: [...destinationTasks, movedTask],
                 },
             }));
-            let tmpMovedTask = buildTaskBodyFromColumn(movedTask,destinationColumnId);
+            let tmpMovedTask = buildTaskBodyFromColumn(KANBAN_COLUMNS,movedTask,destinationColumnId);
             tmpMovedTask.id = movedTask.id;
             try {
                 await updateUserTask(tmpMovedTask);   
@@ -99,9 +98,10 @@ const Kanban = () => {
         );
     }, [kanbanObject]);
 
+    console.log(selectedPriority);
     const addNewTask = async () => {
         if (newTaskTitle && selectedColumn) {
-            const newTask = { title: newTaskTitle };
+            const newTask = { title: newTaskTitle, priority: selectedPriority };
             const columnId = Object.keys(kanbanObject).find((columnId) => columnId === selectedColumn);
             try {
                 const addedTaskResponse = await handleAddTask(newTask, columnId);
@@ -140,6 +140,7 @@ const Kanban = () => {
             let tmpTask = { 
                 ...editTask,
                 title: newTaskTitle,
+                priority: selectedPriority,
             };
             try {
                 const updatedTaskResponse = await updateUserTask(tmpTask);
@@ -203,6 +204,7 @@ const Kanban = () => {
         setOpenDialog(true);
     };
 
+
     if (isLoading || !kanbanObject) return <SkeletonColumn />;
 
     return (
@@ -231,7 +233,9 @@ const Kanban = () => {
                                 <DroppableContainer id={columnId}>
                                     {column.tasks.map((task) => (
                                         <SortableItem key={task.id} id={task.id}>
-                                            <div className="p-2 w-full my-2 bg-white rounded-md shadow-sm flex flex-col space-y-2">
+                                            <div className="p-2 w-full my-2 bg-voidBlack 
+                                            border-2 border-f2green text-white
+                                            rounded-md shadow-sm flex flex-col space-y-2">
                                                 <div className="text-sm break-words">{task.title}</div>
                                                 <div className="flex justify-end space-x-2">
                                                     <Button
@@ -248,12 +252,18 @@ const Kanban = () => {
                                                         className="w-8"
                                                         onClick={(e) => {
                                                             e.stopPropagation();
+                                                            setCurrentTask(task);
                                                             handleEditTaskClick(task, columnId);
                                                         }}
                                                         onPointerDown={(e) => e.stopPropagation()}
                                                     >
                                                         <LucideEdit2 width={10} />
                                                     </Button>
+                                                </div>
+                                                <div className="w-full text-xs font-bold text-voidBlack">
+                                                    <div className={`flex justify-center w-full ${getPriorityColor(task.priority)}`}>
+                                                        {task.priority}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </SortableItem>
@@ -273,36 +283,18 @@ const Kanban = () => {
                 ))}
             </div>
 
-            <AlertDialog open={openDialog} onOpenChange={setOpenDialog}>
-                <AlertDialogTitle>
-                    {editTask ? "Edit Task" : "Add New Task"}
-                </AlertDialogTitle>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <h3 className="text-lg font-semibold">
-                            {editTask ? "Edit Task" : "Add New Task"}
-                        </h3>
-                    </AlertDialogHeader>
-
-                    <AlertDialogDescription>
-                        <Input
-                            type="text"
-                            placeholder="Task title"
-                            value={newTaskTitle}
-                            onChange={(e) => setNewTaskTitle(e.target.value)}
-                        />
-                    </AlertDialogDescription>
-
-                    <AlertDialogFooter>
-                        <AlertDialogAction onClick={editTask ? updateTask : addNewTask}>
-                            {editTask ? "Update Task" : "Add Task"}
-                        </AlertDialogAction>
-                        <Button className="bg-voidBlack hover:text-voidBlack transition-all duration-300" onClick={() => setOpenDialog(false)} variant="outline">
-                            Cancel
-                        </Button>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+            <KanbanItemAlertDialog
+                openDialog={openDialog}
+                setOpenDialog={setOpenDialog}
+                editTask={editTask}
+                updateTask={updateTask}
+                addNewTask={addNewTask}
+                newTaskTitle={newTaskTitle}
+                setNewTaskTitle={setNewTaskTitle}
+                currentTask={currentTask}
+                selectedPriority={selectedPriority}
+                setSelectedPriority={setSelectedPriority}
+            />
 
             <DragOverlay>
                 {activeTask ? (

@@ -1,3 +1,4 @@
+//cambio 
 export const transformDatafromAPI = async (columns, tasks) => {
     try {
         const initialColumns = {};
@@ -5,14 +6,14 @@ export const transformDatafromAPI = async (columns, tasks) => {
         columns.forEach((column) => {
             let filteredTasks = [];
             switch (column) {
-                case "TODO":
-                    filteredTasks = tasks.filter((task) => !task.doing && !task.done);
+                case columns[0]:
+                    filteredTasks = tasks.filter((task) => task.status === columns[0]);
                     break;
-                case "DOING":
-                    filteredTasks = tasks.filter((task) => task.doing && !task.done);
+                case columns[1]:
+                    filteredTasks = tasks.filter((task) => task.status === columns[1]);
                     break;
-                case "DONE":
-                    filteredTasks = tasks.filter((task) => task.done);
+                case columns[2]:
+                    filteredTasks = tasks.filter((task) => task.status === columns[2]);
                     break;
                 default:
                     break;

@@ -2,6 +2,7 @@ import CalendarForm from "@/components/custom/CalendarForm";
 import DayCounter from "@/components/custom/DayCounter";
 import Kanban from "@/components/custom/KanbanBoard/Kanban";
 import Stats from "@/components/custom/Stats";
+import { KANBAN_COLUMNS } from "@/constants";
 import { useTodoerContext } from "@/contexts/TodoerContext/TodoerContext";
 import { fetchUserTasks } from "@/lib/actions";
 import { useEffect } from "react";
@@ -38,7 +39,7 @@ const KanbanBoard = () => {
                     </div>
 
                     <div className="flex flex-row gap-2 w-full lg:w-1/4 lg:flex-col">
-                        <Stats className="flex-1" />
+                        <Stats className="flex-1" columns={KANBAN_COLUMNS} />
                     </div>
                 </div>
             </div>
