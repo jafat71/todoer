@@ -1,12 +1,14 @@
 /* eslint-disable react/prop-types */
 
 import { Box, Calendar1, CalendarClock, Check, ListChecks } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 
 const UserBoard = ({ board }) => {
     const tasks = board.tasks ? board.tasks : [];
+    const navigate = useNavigate();
     return (
-        <div className="p-2 my-2 border-2 border-gray-300 rounded-md w-full">
+        <div className="p-2 cursor-pointer hover:scale-105 transition-all duration-300 my-2 border-2 border-gray-300 rounded-md w-full" onClick={() => navigate(`/kanban/${board.id}`)}>
             <div className="flex flex-row items-center justify-between">
                 <Box />
                 <div className="text-xl font-bold text-fgreen">{board.title}</div>

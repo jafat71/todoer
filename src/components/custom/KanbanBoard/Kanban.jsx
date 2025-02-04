@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import { useState, useCallback } from "react";
 import { DndContext, closestCenter, DragOverlay } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
@@ -12,7 +14,8 @@ import { getPriorityColor, KANBAN_COLUMNS, PRIORITY_OPTIONS } from "@/constants"
 import { LucideDelete, LucideEdit2 } from "lucide-react";
 import KanbanItemAlertDialog from "./KanbanItemAlertDialog";
 
-const Kanban = () => {
+const Kanban = ({boardId = ""}) => {
+    console.log("Board ID:", boardId)
     const { isLoading, kanbanObject, setKanbanObject } = useTodoerContext();
     const [newTaskTitle, setNewTaskTitle] = useState("");
     const [selectedColumn, setSelectedColumn] = useState(null);
@@ -46,6 +49,7 @@ const Kanban = () => {
 
     const handleAddTask = useCallback(async (task, columnId) => {
         const tmpTask = buildTaskBodyFromColumn(KANBAN_COLUMNS,task,columnId);
+        tmpTask.board_id = boardId;
         return await addUserTask(tmpTask);
     }, []);
 
@@ -76,6 +80,7 @@ const Kanban = () => {
             }));
             let tmpMovedTask = buildTaskBodyFromColumn(KANBAN_COLUMNS,movedTask,destinationColumnId);
             tmpMovedTask.id = movedTask.id;
+            tmpMovedTask.board_id = boardId;
             try {
                 await updateUserTask(tmpMovedTask);   
             } catch (error) {
@@ -98,9 +103,12 @@ const Kanban = () => {
         );
     }, [kanbanObject]);
 
-    console.log(selectedPriority);
     const addNewTask = async () => {
         if (newTaskTitle && selectedColumn) {
+            if (newTaskTitle.length < 4) {
+                alert("Task title must be at least 4 characters long");
+                return;
+            }
             const newTask = { title: newTaskTitle, priority: selectedPriority };
             const columnId = Object.keys(kanbanObject).find((columnId) => columnId === selectedColumn);
             try {

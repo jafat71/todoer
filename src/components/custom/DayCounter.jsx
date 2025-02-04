@@ -1,11 +1,28 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useTodoerContext } from "@/contexts/TodoerContext/TodoerContext";
+import { useEffect } from "react";
+import { useState } from "react";
 
 const DayCounter = () => {
-    const { daysRemaining, period: totalDays } = useTodoerContext();
+    const { daysRemaining, period: totalDays, dates } = useTodoerContext();
 
     const progressValue = daysRemaining ?  (100 - (daysRemaining / totalDays) * 100).toFixed(2) : 0;
+    
+    const [startDateIsBeforeToday, setStartDateIsBeforeToday] = useState(false);
+    useEffect(() => {
+        if (!dates) return; 
+        console.log("Dates:", dates)
+
+        const startDate = new Date(dates.fromDate);
+        const today = new Date();
+        let startDateIsBeforeToday = false;
+        if (startDate > today) {
+            startDateIsBeforeToday = true;
+        }
+        setStartDateIsBeforeToday(startDateIsBeforeToday);
+    }, [dates]);
+    
 
     return (
         <Card className="text-center bg-black w-full  rounded-xl h-[350px] lg:h-[430px]">
@@ -19,7 +36,7 @@ const DayCounter = () => {
                             {totalDays}
                         </div>
                         <div className="text-white">
-                            Days since begin
+                            {startDateIsBeforeToday ? "Days to begin" : "Days since begin"}
                         </div>
 
                     </div>

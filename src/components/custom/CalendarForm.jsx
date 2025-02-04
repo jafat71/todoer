@@ -5,7 +5,6 @@ import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { useEffect, useState } from "react";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -22,7 +21,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useTodoerContext } from "@/contexts/TodoerContext/TodoerContext";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { createUserBoard } from "@/services/actions";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -39,7 +37,6 @@ const FormSchema = z.object({
 });
 
 const CalendarForm = () => {
-  const { setDates } = useTodoerContext();
   const form = useForm({ resolver: zodResolver(FormSchema), mode: "onChange" });
   const fromDate = useWatch({ control: form.control, name: "fromDate" });
   const [isOpenAlert, setIsOpenAlert] = useState(false);
@@ -62,18 +59,8 @@ const CalendarForm = () => {
         from_date: data.fromDate ? new Date(data.fromDate).toISOString() : null,
         to_date: data.toDate ? new Date(data.toDate).toISOString() : null
       };
-
-      console.log("Board data:", boardData);
-
       const board = await createUserBoard(boardData);
-      console.log("Board created:", board);
-
-      const dates = {
-        fromDate: board.board.from_date,
-        toDate: board.board.to_date
-      }
-      setDates(dates);
-      navigate("/kanban");
+      navigate(`/kanban/${board.board.id}`);
     } catch (error) {
       const message =
         error?.response?.data?.message ||

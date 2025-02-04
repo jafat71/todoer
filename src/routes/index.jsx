@@ -8,7 +8,7 @@ const AppRouter = () => {
     <Router >
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/kanban" element={<KanbanBoard />} />
+        <Route path="/kanban/:id" element={<KanbanBoard />} />
         <Route path="/create" element={<NewKanbanBoard />} />
 
       </Routes>

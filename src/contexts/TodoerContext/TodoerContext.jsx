@@ -73,6 +73,7 @@ export const TodoerProvider = ({ children }) => {
     return (
         <TodoerContext.Provider value={{
             setDates,
+            dates,
             daysRemaining,
             period,
             kanbanObject,

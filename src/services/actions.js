@@ -27,6 +27,7 @@ export const fetchUserTasks = async () => {
 
 export const addUserTask = async (task) => {
     try {  
+        console.log("Task:", task)
         const response = await axios.post(BACKEND_URL + "/tasks", task);
         return response.data;
     } catch (error) {
@@ -73,6 +74,17 @@ export const fetchUserBoards = async () => {
     }
 }
 
+export const fetchUserBoard = async (boardId) => {  
+    try {
+        const data = await axios.get(BACKEND_URL+"/boards/"+boardId)
+        console.log("Board:", data)
+        return data.data
+    } catch (error) {
+        console.error("Error fetching user board:", error);
+        return null;
+    }
+}
+
 export const createUserBoard = async (board) => {
     try {
         const data = await axios.post(BACKEND_URL+"/boards", board)
@@ -83,3 +95,13 @@ export const createUserBoard = async (board) => {
     }
 }
 
+export const updateUserBoard = async (data, id) => {
+    try {
+        console.log("Data:", data)
+        const response = await axios.put(BACKEND_URL+"/boards/"+id, data)
+        return response.data
+    } catch (error) {
+        console.error("Error updating user board:", error);
+        throw error;
+    }
+}

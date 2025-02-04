@@ -1,18 +1,39 @@
-import CalendarForm from "@/components/custom/CalendarForm";
+import CalendarInfo from "@/components/custom/CalendarInfo";
 import DayCounter from "@/components/custom/DayCounter";
 import Kanban from "@/components/custom/KanbanBoard/Kanban";
 import Stats from "@/components/custom/Stats";
 import { KANBAN_COLUMNS } from "@/constants";
 import { useTodoerContext } from "@/contexts/TodoerContext/TodoerContext";
-import { fetchUserTasks } from "@/services/actions";
-import { useEffect } from "react";
+import { fetchUserBoard} from "@/services/actions";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 const KanbanBoard = () => {
-    const {setKanbanBoard} = useTodoerContext()
+    const {setKanbanBoard, setDates} = useTodoerContext()
+    const {id} = useParams();
+    const [board, setBoard] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
+
+
     const getBoardData = async () => {
-        const data = await fetchUserTasks()
-        if (data.success){
-            setKanbanBoard(data.tasks)
+        setIsLoading(true);
+        try {       
+            const board = await fetchUserBoard(id)
+            console.log("Board:", board)
+            setBoard(board.board)
+        const dates = {
+            fromDate: board.board.from_date,
+            toDate: board.board.to_date
+            }
+            setDates(dates)
+            console.log("Board:", board.board)
+            console.log("Tasks:", board.tasks)
+            setKanbanBoard(board.tasks)
+            setIsLoading(false);
+        } catch (error) {
+            console.error("Error fetching board data:", error);
+            setIsLoading(false);
+            alert("Error fetching board data");
         }
     }    
     useEffect(() => {
@@ -20,6 +41,7 @@ const KanbanBoard = () => {
             await getBoardData()
         })()     
     }, []);
+
     return (
         <>
             <div className="min-h-screen flex flex-col items-center justify-center px-4">
@@ -30,12 +52,12 @@ const KanbanBoard = () => {
                     flex flex-col gap-2 w-full max-w-8xl lg:flex-row"
                 >
                     <div className="flex flex-row gap-2 w-full lg:w-1/4 lg:flex-col">
-                        <CalendarForm className="flex-1" />
+                        <CalendarInfo board={board} isLoading={isLoading} />
                         <DayCounter className="flex-1" />
                     </div>
 
                     <div className="flex flex-col gap-2 w-full lg:w-3/4">
-                        <Kanban className="w-full h-full" />
+                        <Kanban className="w-full h-full" boardId={id} />
                     </div>
 
                     <div className="flex flex-row gap-2 w-full lg:w-1/4 lg:flex-col">

@@ -1,8 +1,10 @@
+/* eslint-disable react/prop-types */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
+import { useEffect, useState } from "react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -20,8 +22,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"; // Import Card components
-import { useEffect } from "react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { updateUserBoard } from "@/services/actions";
+import { useTodoerContext } from "@/contexts/TodoerContext/TodoerContext";
 
 const FormSchema = z.object({
   fromDate: z.date({
@@ -32,32 +35,113 @@ const FormSchema = z.object({
   }),
 });
 
-const CalendarForm = ({ onSubmit }) => {
+const CalendarInfo = ({ board, isLoading }) => {
+  const {setDates} = useTodoerContext()
+  const [boardName, setBoardName] = useState(board?.title);
+  const [enableEdit, setEnableEdit] = useState(false);
+  const [isLoadingUpdate, setIsLoadingUpdate] = useState(false);
+
   const form = useForm({
     resolver: zodResolver(FormSchema),
+    defaultValues: {
+      fromDate: board?.from_date ? new Date(board.from_date) : null,
+      toDate: board?.to_date ? new Date(board.to_date) : null,
+    },
   });
 
   const fromDate = useWatch({ control: form.control, name: "fromDate" });
 
-  // Vaciar el campo toDate si fromDate cambia
   useEffect(() => {
-    if (fromDate) {
-      form.setValue("toDate", null); // Vaciar toDate cuando cambia fromDate
+    if (board?.from_date) {
+      form.setValue("fromDate", new Date(board.from_date));
     }
-  }, [fromDate, form]);
+    if (board?.to_date) {
+      form.setValue("toDate", new Date(board.to_date));
+    }
+    if (board?.title) {
+      setBoardName(board.title);
+    }
+  }, [board, form]);
+
+  const handleSubmit = (e) => { 
+    e.preventDefault();
+    setEnableEdit(false);
+    handleUpdateBoard(form.getValues());
+  }
+
+  const handleEdit = (e) => {
+    e.preventDefault();
+    setEnableEdit(true);
+  }
+
+  const handleUpdateBoard = async (data) => {
+    setIsLoadingUpdate(true);
+    try {
+      const boardData = {
+        title: boardName,
+        from_date: data.fromDate ? new Date(data.fromDate).toISOString() : null,
+        to_date: data.toDate ? new Date(data.toDate).toISOString() : null
+      };  
+      const response = await updateUserBoard(boardData, board.id);
+      const newDates = {
+        fromDate: response.board.from_date,
+        toDate: response.board.to_date
+      }
+      console.log("New Dates:", newDates);
+      setDates(newDates);
+      console.log(response);
+    } catch (error) {
+      console.error("Error updating user board:", error);
+      throw error;
+    } finally {
+      setIsLoadingUpdate(false);
+    }
+  }
+
+  const handleCancel = () => {
+    setEnableEdit(false);
+    setBoardName(board?.title);
+    form.reset();
+    form.setValue("fromDate", new Date(board.from_date));
+    form.setValue("toDate", new Date(board.to_date));
+  }
+
+  if (isLoading) {
+    return (
+      <div className="w-full">
+        <Card className="rounded-xl h-[350px] p-4">
+          <CardHeader>
+            <div className="h-12 w-full bg-voidBlack opacity-20" />
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              <div className="h-10 w-full bg-voidBlack " />
+              <div className="h-10 w-full bg-voidBlack" />
+              <div className="h-12 w-full bg-voidBlack" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">
       <Card className="rounded-xl h-[350px]">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">Kanban Period</CardTitle>
+          <CardTitle className="text-2xl font-bold text-center">
+            <input 
+              type="text"
+              disabled={!enableEdit}
+              className="text-2xl font-bold text-center bg-transparent border-none  "
+              value={boardName}
+              onChange={(e) => setBoardName(e.target.value)}
+            />
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)} // Usar la prop onSubmit aquí
-              className="space-y-8 flex flex-col items-start"
-            >
+            <form className="space-y-8 flex flex-col items-start">
               <FormField
                 control={form.control}
                 name="fromDate"
@@ -68,6 +152,7 @@ const CalendarForm = ({ onSubmit }) => {
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
+                            disabled={!enableEdit}
                             variant={"outline"}
                             className={cn(
                               "w-full pl-3 text-left font-normal",
@@ -103,6 +188,7 @@ const CalendarForm = ({ onSubmit }) => {
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
+                            disabled={!enableEdit}
                             variant={"outline"}
                             className={cn(
                               "w-full pl-3 text-left font-normal",
@@ -128,7 +214,21 @@ const CalendarForm = ({ onSubmit }) => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full">Submit</Button>
+
+                {
+                  enableEdit ? (
+                    <div className="flex flex-row gap-2 w-full">
+                      <Button type="submit" className="w-full bg-sky-600" onClick={handleSubmit}>
+                        {
+                            isLoadingUpdate ? "Updating..." : "Submit"
+                        }
+                      </Button>
+                      <Button className="w-full bg-red-500" onClick={handleCancel}>Cancel</Button>
+                    </div>
+                  ) : (
+                    <Button className="w-full bg-fuchsia-500" onClick={handleEdit}>Edit</Button>
+                  )
+                }
             </form>
           </Form>
         </CardContent>
@@ -137,4 +237,4 @@ const CalendarForm = ({ onSubmit }) => {
   );
 };
 
-export default CalendarForm;
+export default CalendarInfo;

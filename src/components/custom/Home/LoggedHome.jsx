@@ -31,7 +31,7 @@ const LoggedHome = () => {
           font-bold w-full
           shadow-sm shadow-f2green
           text-voidBlack bg-gradient-to-r from-fgreen to-f2green my-2 rounded-lg
-          hover:scale-110 transition-all duration-300
+          hover:scale-105 transition-all duration-300
           ">
             +
           </button>
