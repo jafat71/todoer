@@ -2,17 +2,16 @@ import axios from "axios";
 const BACKEND_URL =  import.meta.env.VITE_BACKEND_URL
 
 const noLoggedExampleTasks = [
-    { id: 'task-1', title: 'Water the plants 🌱', doing: true, done: false },
-    { id: 'task-2', title: 'Go for a run 🏃‍♂️', doing: false, done: false },
-    { id: 'task-3', title: 'Read a book 📚', doing: false, done: true },
-    { id: 'task-4', title: 'Write in the journal ✍️', doing: false, done: false },
-    { id: 'task-5', title: 'Cook dinner 🍳', doing: false, done: true },
-    { id: 'task-6', title: 'Walk the dog 🐕', doing: true, done: false },
-    { id: 'task-7', title: 'Listen to a podcast 🎧', doing: false, done: false }
+    { id: 'task-1', title: 'Water the plants 🌱', status: "DOING" },
+    { id: 'task-2', title: 'Go for a run 🏃‍♂️', status: "DOING" },
+    { id: 'task-3', title: 'Read a book 📚', status: "DONE" },
+    { id: 'task-4', title: 'Write in the journal ✍️', status: "DOING" },
+    { id: 'task-5', title: 'Cook dinner 🍳', status: "DONE" },
+    { id: 'task-6', title: 'Walk the dog 🐕', status: "TODO" },
+    { id: 'task-7', title: 'Listen to a podcast 🎧', status: "TODO" }
 ];
 
 export const fetchExampleTasks = async () => {
-    await new Promise(resolve => setTimeout(resolve, 1000))
     return noLoggedExampleTasks
 }
 
@@ -61,6 +60,26 @@ export const updateUserTask = async (task) => {
         } else {
             throw error;
         }
+    }
+}
+
+export const fetchUserBoards = async () => {
+    try {
+        const data = await axios.get(BACKEND_URL+"/boards")
+        return data.data
+    } catch (error) {
+        console.error("Error fetching user boards:", error);
+        return [];
+    }
+}
+
+export const createUserBoard = async (board) => {
+    try {
+        const data = await axios.post(BACKEND_URL+"/boards", board)
+        return data.data
+    } catch (error) {
+        console.error("Error creating user board:", error);
+        throw error;
     }
 }
 

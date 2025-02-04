@@ -25,7 +25,7 @@ const Navbar = () => {
         </a>
         {isLogged && (
           <>
-            <a href="/">
+            <a href="/create">
               <LucideFolderPlus
                 size={34}
                 color="white"

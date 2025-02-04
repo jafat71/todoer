@@ -4,7 +4,7 @@ import Kanban from "@/components/custom/KanbanBoard/Kanban";
 import Stats from "@/components/custom/Stats";
 import { KANBAN_COLUMNS } from "@/constants";
 import { useTodoerContext } from "@/contexts/TodoerContext/TodoerContext";
-import { fetchUserTasks } from "@/lib/actions";
+import { fetchUserTasks } from "@/services/actions";
 import { useEffect } from "react";
 
 const KanbanBoard = () => {

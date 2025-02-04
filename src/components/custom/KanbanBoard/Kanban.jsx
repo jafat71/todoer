@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useTodoerContext } from "@/contexts/TodoerContext/TodoerContext";
 import SkeletonColumn from "./SkeletonColumn";
-import { addUserTask, deleteUserTask, updateUserTask } from "@/lib/actions";
+import { addUserTask, deleteUserTask, updateUserTask } from "@/services/actions";
 import { getPriorityColor, KANBAN_COLUMNS, PRIORITY_OPTIONS } from "@/constants";
 import { LucideDelete, LucideEdit2 } from "lucide-react";
 import KanbanItemAlertDialog from "./KanbanItemAlertDialog";
