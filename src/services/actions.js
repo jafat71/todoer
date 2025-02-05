@@ -105,3 +105,14 @@ export const updateUserBoard = async (data, id) => {
         throw error;
     }
 }
+
+export const deleteUserBoard = async (boardId) => {
+    try {
+        const data = await axios.delete(BACKEND_URL+"/boards/"+boardId)
+        return data.data
+    } catch (error) {
+        console.error("Error deleting user board:", error);
+        return null;
+    }
+}
+

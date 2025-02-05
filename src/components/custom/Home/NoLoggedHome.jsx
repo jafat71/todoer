@@ -13,7 +13,7 @@ useEffect(() => {
   return (
     <div className="flex flex-col-reverse lg:flex-row items-center justify-center ">
       <div className="p-6 w-full lg:w-3/4 h-full md:h-[480px]">
-        <Kanban/>
+        <Kanban demo={true}/>
       </div>
       <div className="flex flex-col items-center p-4">
           <div className="flex lg:hidden text-4xl font-extrabold my-5">KNBNN</div>

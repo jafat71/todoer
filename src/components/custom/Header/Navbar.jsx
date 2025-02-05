@@ -2,7 +2,6 @@ import {
   LucideColumns3,
   LucideFolderPlus,
   LucideSettings,
-  LucideTimer,
   LucideUser2,
 } from "lucide-react";
 import LogoSvg from "../../../assets/logo.svg";
@@ -35,14 +34,6 @@ const Navbar = () => {
 
             <a href="/kanban">
               <LucideColumns3
-                size={34}
-                color="white"
-                className={`${iconClassname}`}
-              />
-            </a>
-
-            <a href="/">
-              <LucideTimer
                 size={34}
                 color="white"
                 className={`${iconClassname}`}

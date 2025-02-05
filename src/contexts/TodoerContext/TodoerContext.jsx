@@ -80,7 +80,7 @@ export const TodoerProvider = ({ children }) => {
             setKanbanObject,
             isLoading,
             setKanbanBoard,
-            setNoLoggeKanbanBoard
+            setNoLoggeKanbanBoard,
         }}>
             {children}
         </TodoerContext.Provider>

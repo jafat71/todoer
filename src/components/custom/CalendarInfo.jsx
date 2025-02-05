@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Pencil, Save, X } from "lucide-react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { useEffect, useState } from "react";
@@ -39,7 +39,6 @@ const CalendarInfo = ({ board, isLoading }) => {
   const {setDates} = useTodoerContext()
   const [boardName, setBoardName] = useState(board?.title);
   const [enableEdit, setEnableEdit] = useState(false);
-  const [isLoadingUpdate, setIsLoadingUpdate] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(FormSchema),
@@ -75,7 +74,6 @@ const CalendarInfo = ({ board, isLoading }) => {
   }
 
   const handleUpdateBoard = async (data) => {
-    setIsLoadingUpdate(true);
     try {
       const boardData = {
         title: boardName,
@@ -93,9 +91,7 @@ const CalendarInfo = ({ board, isLoading }) => {
     } catch (error) {
       console.error("Error updating user board:", error);
       throw error;
-    } finally {
-      setIsLoadingUpdate(false);
-    }
+    } 
   }
 
   const handleCancel = () => {
@@ -218,15 +214,17 @@ const CalendarInfo = ({ board, isLoading }) => {
                 {
                   enableEdit ? (
                     <div className="flex flex-row gap-2 w-full">
-                      <Button type="submit" className="w-full bg-sky-600" onClick={handleSubmit}>
-                        {
-                            isLoadingUpdate ? "Updating..." : "Submit"
-                        }
+                      <Button type="submit" className="w-full  bg-f2green  text-black px-4 py-2 rounded hover:bg-fgreen hover:scale-105 transition-all duration-300" onClick={handleSubmit}>
+                        <Save className="w-6 h-6 text-black" />
                       </Button>
-                      <Button className="w-full bg-red-500" onClick={handleCancel}>Cancel</Button>
+                      <Button className="w-full bg-red-500" onClick={handleCancel}>
+                        <X className="w-6 h-6 text-black" />
+                      </Button>
                     </div>
                   ) : (
-                    <Button className="w-full bg-fuchsia-500" onClick={handleEdit}>Edit</Button>
+                    <Button className="w-full bg-f2green  text-black px-4 py-2 rounded hover:bg-fgreen hover:scale-105 transition-all duration-300" onClick={handleEdit}>
+                      <Pencil className="w-6 h-6  text-black" /> 
+                    </Button> 
                   )
                 }
             </form>

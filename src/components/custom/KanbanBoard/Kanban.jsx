@@ -14,8 +14,7 @@ import { getPriorityColor, KANBAN_COLUMNS, PRIORITY_OPTIONS } from "@/constants"
 import { LucideDelete, LucideEdit2 } from "lucide-react";
 import KanbanItemAlertDialog from "./KanbanItemAlertDialog";
 
-const Kanban = ({boardId = ""}) => {
-    console.log("Board ID:", boardId)
+const Kanban = ({boardId = "", demo=false}) => {
     const { isLoading, kanbanObject, setKanbanObject } = useTodoerContext();
     const [newTaskTitle, setNewTaskTitle] = useState("");
     const [selectedColumn, setSelectedColumn] = useState(null);
@@ -81,11 +80,13 @@ const Kanban = ({boardId = ""}) => {
             let tmpMovedTask = buildTaskBodyFromColumn(KANBAN_COLUMNS,movedTask,destinationColumnId);
             tmpMovedTask.id = movedTask.id;
             tmpMovedTask.board_id = boardId;
-            try {
-                await updateUserTask(tmpMovedTask);   
-            } catch (error) {
-                console.log(error);
-                alert(error);
+            if (!demo) {    
+                try {
+                    await updateUserTask(tmpMovedTask);   
+                } catch (error) {
+                    console.log(error);
+                    alert(error);
+                }
             }
         }
 
@@ -254,8 +255,10 @@ const Kanban = ({boardId = ""}) => {
                                                         }}
                                                         onPointerDown={(e) => e.stopPropagation()}
                                                     >
-                                                        <LucideDelete width={10} />
+                                                        <LucideDelete className="w-6 h-6"  />
                                                     </Button>
+                                                    {
+                                                        !demo && (  
                                                     <Button
                                                         className="w-8"
                                                         onClick={(e) => {
@@ -265,8 +268,9 @@ const Kanban = ({boardId = ""}) => {
                                                         }}
                                                         onPointerDown={(e) => e.stopPropagation()}
                                                     >
-                                                        <LucideEdit2 width={10} />
-                                                    </Button>
+                                                            <LucideEdit2 className="w-6 h-6" />
+                                                        </Button>
+                                                    )}
                                                 </div>
                                                 <div className="w-full text-xs font-bold text-voidBlack">
                                                     <div className={`flex justify-center w-full ${getPriorityColor(task.priority)}`}>
@@ -279,14 +283,17 @@ const Kanban = ({boardId = ""}) => {
                                 </DroppableContainer>
                             </SortableContext>
                         </CardContent>
-                        <Button
-                            onClick={() => handleAddTaskClick(columnId)}
+                        {
+                            !demo && (
+                                <Button
+                                    onClick={() => handleAddTaskClick(columnId)}
                             className="mt-auto bg-fgreen hover:text-white transition-all duration-300  m-2"
                         >
                             <div className="text-black font-semibold text-lg w-full h-full ">
                                 Add Task
-                            </div>
-                        </Button>
+                                </div>
+                            </Button>
+                        )}
                     </Card>
                 ))}
             </div>

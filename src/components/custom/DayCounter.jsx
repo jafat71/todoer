@@ -36,7 +36,7 @@ const DayCounter = () => {
                             {totalDays}
                         </div>
                         <div className="text-white">
-                            {startDateIsBeforeToday ? "Days to begin" : "Days since begin"}
+                            {startDateIsBeforeToday ? "Days to begin" : "Days to begin"}
                         </div>
 
                     </div>
