@@ -3,11 +3,13 @@ import { useEffect, useState } from "react"
 import UserBoard from "./UserBoard"
 import { SquareDashedKanban } from "lucide-react"
 import { useNavigate } from "react-router-dom"
+import { useUserContext } from "@/contexts/UserContext/UserContext"
 
 const LoggedHome = () => {
   const [boards, setBoards] = useState([])
+  const {token,user} = useUserContext()
   useEffect(() => {
-    fetchUserBoards().then(res => setBoards(res.boards))
+    fetchUserBoards(token,user.id).then(res => setBoards(res.boards))
   }, [])
 
   const navigate = useNavigate();

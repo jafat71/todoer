@@ -4,14 +4,16 @@ import Kanban from "@/components/custom/KanbanBoard/Kanban";
 import Stats from "@/components/custom/Stats";
 import { KANBAN_COLUMNS } from "@/constants";
 import { useTodoerContext } from "@/contexts/TodoerContext/TodoerContext";
-import { deleteUserBoard, fetchUserBoard } from "@/services/actions";
+import { deleteUserBoard, fetchCompleteUserBoard } from "@/services/actions";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Download, Trash } from "lucide-react";
 import usePDFMake from "@/hooks/use-PDFMake";
+import { useUserContext } from "@/contexts/UserContext/UserContext";
 
 const KanbanBoard = () => {
     const { setKanbanBoard, setDates} = useTodoerContext();
+    const {token} = useUserContext()
     const { id } = useParams();
     const [board, setBoard] = useState({});
     const [isLoading, setIsLoading] = useState(true);
@@ -22,15 +24,13 @@ const KanbanBoard = () => {
     const getBoardData = async () => {
         setIsLoading(true);
         try {
-            const board = await fetchUserBoard(id);
-            console.log("Board:", board);
+            const board = await fetchCompleteUserBoard(token,id);
             setBoard(board.board);
             const dates = {
                 fromDate: board.board.from_date,
                 toDate: board.board.to_date
             };
             setDates(dates);
-            console.log("Tasks:", board.tasks);
             setKanbanBoard(board.tasks);
             setIsLoading(false);
         } catch (error) {

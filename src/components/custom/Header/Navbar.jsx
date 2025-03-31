@@ -8,8 +8,9 @@ import LogoSvg from "../../../assets/logo.svg";
 import { useUserContext } from "@/contexts/UserContext/UserContext";
 
 const Navbar = () => {
-  const { isLogged, setisLogged } = useUserContext();
+  const { isLogged, user } = useUserContext();
   const iconClassname = "hover:scale-110 transition-all duration-300 ";
+  console.log(user)
   return (
     <div className="w-full text-white p-2 flex flex-row justify-between items-center bg-voidBlack  ">
       <ul className="flex flex-row items-center gap-x-4">
@@ -24,7 +25,7 @@ const Navbar = () => {
         </a>
         {isLogged && (
           <>
-            <a href="/create">
+            <a href="/newboard">
               <LucideFolderPlus
                 size={34}
                 color="white"
@@ -57,13 +58,17 @@ const Navbar = () => {
 
       {isLogged ? 
       (
-        <a href="/">
-          <LucideUser2 color="white" className={`${iconClassname}`} />
-        </a>
+        <div className="flex flex-row">
+          <div className="mx-2">Hola, {user.username}</div>
+          <a href="/">
+            <LucideUser2 color="white" className={`${iconClassname}`} />
+          </a>
+        </div>
+
       )
       :
       (
-        <button onClick={() => setisLogged(!isLogged)}>Login</button>
+        <a href={"/auth"}>Login</a>
 
       )}
     </div>

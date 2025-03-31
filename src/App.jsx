@@ -5,6 +5,7 @@ import AppRouter from "./routes";
 import { Toaster } from "@/components/ui/toaster"
 
 const App = () => {
+  console.log("App rendering, Toaster component:", !!Toaster);
 
   //TODO:FOOTER + CUSTOMIZE SHAD}CN STYLES + CONNECT TASKS WITH GO
   return (
@@ -12,9 +13,10 @@ const App = () => {
       <TodoerProvider>
         <div className=" bg-voidBlack">
           <Navbar/>
-            <AppRouter />
-          <Toaster />
+          <AppRouter />
         </div>
+          <Toaster />
+          {console.log("Toaster rendered")}
       </TodoerProvider>
     </UserProvider>
   );

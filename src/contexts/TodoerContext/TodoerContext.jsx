@@ -2,7 +2,7 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react/prop-types */
 import { KANBAN_COLUMNS } from '@/constants';
-import { fetchExampleTasks, fetchUserTasks } from '@/services/actions';
+import { fetchExampleTasks } from '@/services/actions';
 import { getDifferenceBetweenDates } from '@/utils';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { transformDatafromAPI } from './TodoerContextActions';
@@ -21,9 +21,7 @@ export const TodoerProvider = ({ children }) => {
         try {
             let data = []
             data = await fetchExampleTasks(); 
-            console.log(data)
             const transformedData = await transformDatafromAPI(columns, data); 
-            console.log(transformedData)
             setKanbanObject(transformedData); 
         } catch (error) {
             console.error("Error fetching tasks:", error);

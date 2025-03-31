@@ -1,4 +1,4 @@
-import React from 'react';
+/* eslint-disable react/prop-types */
 import { useDroppable } from '@dnd-kit/core';
 
 export const DroppableContainer = ({ id, children }) => {

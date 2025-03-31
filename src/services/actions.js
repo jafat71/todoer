@@ -1,23 +1,17 @@
 import axios from "axios";
-const BACKEND_URL =  import.meta.env.VITE_BACKEND_URL
-
-const noLoggedExampleTasks = [
-    { id: 'task-1', title: 'Water the plants 🌱', status: "DOING" },
-    { id: 'task-2', title: 'Go for a run 🏃‍♂️', status: "DOING" },
-    { id: 'task-3', title: 'Read a book 📚', status: "DONE" },
-    { id: 'task-4', title: 'Write in the journal ✍️', status: "DOING" },
-    { id: 'task-5', title: 'Cook dinner 🍳', status: "DONE" },
-    { id: 'task-6', title: 'Walk the dog 🐕', status: "TODO" },
-    { id: 'task-7', title: 'Listen to a podcast 🎧', status: "TODO" }
-];
+import { BACKEND_URL, noLoggedExampleTasks } from "./config";
 
 export const fetchExampleTasks = async () => {
     return noLoggedExampleTasks
 }
 
-export const fetchUserTasks = async () => {
+export const fetchBoardTasks = async (token) => {
     try { 
-        const data = await axios.get(BACKEND_URL+"/tasks")
+        const data = await axios.get(BACKEND_URL+"/tasks",{
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }        
+            })
         return data.data
     } catch (error) {
         console.error("Error fetching user tasks:", error);
@@ -25,10 +19,13 @@ export const fetchUserTasks = async () => {
     }
 }
 
-export const addUserTask = async (task) => {
+export const addUserTask = async (token,task) => {
     try {  
-        console.log("Task:", task)
-        const response = await axios.post(BACKEND_URL + "/tasks", task);
+        const response = await axios.post(BACKEND_URL + "/tasks", task,{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }        
+        });
         return response.data;
     } catch (error) {
         console.error("Error adding user task:", error);
@@ -40,9 +37,13 @@ export const addUserTask = async (task) => {
     }
 }
 
-export const deleteUserTask = async (taskId) => {
+export const deleteUserTask = async (token,taskId) => {
     try {
-        const data = await axios.delete(BACKEND_URL+"/tasks/"+taskId)
+        const data = await axios.delete(BACKEND_URL+"/tasks/"+taskId,{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }        
+        })
         return data.data
     } catch (error) {
         console.error("Error deleting user task:", error);
@@ -50,9 +51,13 @@ export const deleteUserTask = async (taskId) => {
     }
 }
 
-export const updateUserTask = async (task) => {
+export const updateUserTask = async (token,task) => {
     try {
-        const data = await axios.put(BACKEND_URL+"/tasks/"+task.id, task)
+        const data = await axios.put(BACKEND_URL+"/tasks/"+task.id, task,{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }        
+        })
         return data.data
     } catch (error) {
         console.log(error);
@@ -64,9 +69,13 @@ export const updateUserTask = async (task) => {
     }
 }
 
-export const fetchUserBoards = async () => {
+export const fetchUserBoards = async (token, userId) => {
     try {
-        const data = await axios.get(BACKEND_URL+"/boards")
+        const data = await axios.get(BACKEND_URL+"/boards/user/"+userId, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }      
+        })
         return data.data
     } catch (error) {
         console.error("Error fetching user boards:", error);
@@ -74,9 +83,13 @@ export const fetchUserBoards = async () => {
     }
 }
 
-export const fetchUserBoard = async (boardId) => {  
+export const fetchCompleteUserBoard = async (token,boardId) => {  
     try {
-        const data = await axios.get(BACKEND_URL+"/boards/"+boardId)
+        const data = await axios.get(BACKEND_URL+"/boards/"+boardId, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }      
+        })
         console.log("Board:", data)
         return data.data
     } catch (error) {
@@ -85,9 +98,13 @@ export const fetchUserBoard = async (boardId) => {
     }
 }
 
-export const createUserBoard = async (board) => {
+export const createUserBoard = async (token,board) => {
     try {
-        const data = await axios.post(BACKEND_URL+"/boards", board)
+        const data = await axios.post(BACKEND_URL+"/boards", board, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }      
+        })
         return data.data
     } catch (error) {
         console.error("Error creating user board:", error);
@@ -95,10 +112,13 @@ export const createUserBoard = async (board) => {
     }
 }
 
-export const updateUserBoard = async (data, id) => {
+export const updateUserBoardData = async (token,data, id) => {
     try {
-        console.log("Data:", data)
-        const response = await axios.put(BACKEND_URL+"/boards/"+id, data)
+        const response = await axios.put(BACKEND_URL+"/boards/"+id, data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }      
+        })
         return response.data
     } catch (error) {
         console.error("Error updating user board:", error);
@@ -106,9 +126,13 @@ export const updateUserBoard = async (data, id) => {
     }
 }
 
-export const deleteUserBoard = async (boardId) => {
+export const deleteUserBoard = async (token,boardId) => {
     try {
-        const data = await axios.delete(BACKEND_URL+"/boards/"+boardId)
+        const data = await axios.delete(BACKEND_URL+"/boards/"+boardId, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }      
+        })
         return data.data
     } catch (error) {
         console.error("Error deleting user board:", error);

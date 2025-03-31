@@ -23,8 +23,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { updateUserBoard } from "@/services/actions";
+import { updateUserBoardData } from "@/services/actions";
 import { useTodoerContext } from "@/contexts/TodoerContext/TodoerContext";
+import { useUserContext } from "@/contexts/UserContext/UserContext";
 
 const FormSchema = z.object({
   fromDate: z.date({
@@ -39,6 +40,8 @@ const CalendarInfo = ({ board, isLoading }) => {
   const {setDates} = useTodoerContext()
   const [boardName, setBoardName] = useState(board?.title);
   const [enableEdit, setEnableEdit] = useState(false);
+
+  const {token} = useUserContext()
 
   const form = useForm({
     resolver: zodResolver(FormSchema),
@@ -80,14 +83,12 @@ const CalendarInfo = ({ board, isLoading }) => {
         from_date: data.fromDate ? new Date(data.fromDate).toISOString() : null,
         to_date: data.toDate ? new Date(data.toDate).toISOString() : null
       };  
-      const response = await updateUserBoard(boardData, board.id);
+      const response = await updateUserBoardData(token,boardData, board.id);
       const newDates = {
         fromDate: response.board.from_date,
         toDate: response.board.to_date
       }
-      console.log("New Dates:", newDates);
       setDates(newDates);
-      console.log(response);
     } catch (error) {
       console.error("Error updating user board:", error);
       throw error;

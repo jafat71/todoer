@@ -25,6 +25,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { createUserBoard } from "@/services/actions";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { useNavigate } from "react-router-dom";
+import { useUserContext } from "@/contexts/UserContext/UserContext";
 
 const FormSchema = z.object({
   name: z.string().min(2, "Kanban Board Name must be at least 2 characters").max(50, "Kanban Board Name must be at most 50 characters"),
@@ -43,6 +44,7 @@ const CalendarForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const {token} = useUserContext()
 
   useEffect(() => {
     if (fromDate) {
@@ -59,7 +61,7 @@ const CalendarForm = () => {
         from_date: data.fromDate ? new Date(data.fromDate).toISOString() : null,
         to_date: data.toDate ? new Date(data.toDate).toISOString() : null
       };
-      const board = await createUserBoard(boardData);
+      const board = await createUserBoard(token,boardData);
       navigate(`/kanban/${board.board.id}`);
     } catch (error) {
       const message =
