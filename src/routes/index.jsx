@@ -8,6 +8,8 @@ import OnBoard from '../pages/OnBoard';
 import UserHome from '@/pages/UserHome';
 import Auth from '@/pages/Auth';
 import { useUserContext } from '@/contexts/UserContext/UserContext';
+import Footer from '@/components/custom/Footer/Footer';
+import Navbar from '@/components/custom/Header/Navbar';
 
 const ProtectedRoute = ({ children }) => {
     const { isLogged } = useUserContext();
@@ -22,25 +24,31 @@ const ProtectedRoute = ({ children }) => {
 const AppRouter = () => {
     return (
         <Router>
-            <Routes>
-                <Route path="/" element={<OnBoard />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/home" element={
-                    <ProtectedRoute>
-                        <UserHome />
-                    </ProtectedRoute>
-                } />
-                <Route path="/newboard" element={
-                    <ProtectedRoute>
-                        <NewKanbanBoard />
-                    </ProtectedRoute>
-                } />
-                <Route path="/kanban/:id" element={
-                    <ProtectedRoute>
-                        <KanbanBoard />
-                    </ProtectedRoute>
-                } />
-            </Routes>
+            <div className="min-h-screen flex flex-col">
+                <Navbar />
+                <main className="flex-grow">
+                    <Routes>
+                        <Route path="/" element={<OnBoard />} />
+                        <Route path="/auth" element={<Auth />} />
+                        <Route path="/home" element={
+                            <ProtectedRoute>
+                                <UserHome />
+                            </ProtectedRoute>
+                        } />
+                        <Route path="/newboard" element={
+                            <ProtectedRoute>
+                                <NewKanbanBoard />
+                            </ProtectedRoute>
+                        } />
+                        <Route path="/kanban/:id" element={
+                            <ProtectedRoute>
+                                <KanbanBoard />
+                            </ProtectedRoute>
+                        } />
+                    </Routes>
+                </main>
+                <Footer />
+            </div>
         </Router>
     );
 }

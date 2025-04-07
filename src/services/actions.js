@@ -1,17 +1,16 @@
 import axios from "axios";
 import { BACKEND_URL, noLoggedExampleTasks } from "./config";
 
+// Configure axios to include credentials in all requests
+axios.defaults.withCredentials = true;
+
 export const fetchExampleTasks = async () => {
     return noLoggedExampleTasks
 }
 
-export const fetchBoardTasks = async (token) => {
+export const fetchBoardTasks = async () => {
     try { 
-        const data = await axios.get(BACKEND_URL+"/tasks",{
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }        
-            })
+        const data = await axios.get(BACKEND_URL+"/tasks")
         return data.data
     } catch (error) {
         console.error("Error fetching user tasks:", error);
@@ -19,13 +18,10 @@ export const fetchBoardTasks = async (token) => {
     }
 }
 
-export const addUserTask = async (token,task) => {
+export const addUserTask = async (task) => {
+    console.log("task", task)
     try {  
-        const response = await axios.post(BACKEND_URL + "/tasks", task,{
-            headers: {
-                Authorization: `Bearer ${token}`
-            }        
-        });
+        const response = await axios.post(BACKEND_URL + "/tasks", task);
         return response.data;
     } catch (error) {
         console.error("Error adding user task:", error);
@@ -37,13 +33,9 @@ export const addUserTask = async (token,task) => {
     }
 }
 
-export const deleteUserTask = async (token,taskId) => {
+export const deleteUserTask = async (taskId) => {
     try {
-        const data = await axios.delete(BACKEND_URL+"/tasks/"+taskId,{
-            headers: {
-                Authorization: `Bearer ${token}`
-            }        
-        })
+        const data = await axios.delete(BACKEND_URL+"/tasks/"+taskId)
         return data.data
     } catch (error) {
         console.error("Error deleting user task:", error);
@@ -51,16 +43,12 @@ export const deleteUserTask = async (token,taskId) => {
     }
 }
 
-export const updateUserTask = async (token,task) => {
+export const updateUserTask = async (task) => {
     try {
-        const data = await axios.put(BACKEND_URL+"/tasks/"+task.id, task,{
-            headers: {
-                Authorization: `Bearer ${token}`
-            }        
-        })
+        const data = await axios.put(BACKEND_URL+"/tasks/"+task.id, task)
         return data.data
     } catch (error) {
-        console.log(error);
+        console.error("Error updating user task:", error);
         if (error.response && error.response.data) {
             throw error.response.data.errors;
         } else {
@@ -69,13 +57,9 @@ export const updateUserTask = async (token,task) => {
     }
 }
 
-export const fetchUserBoards = async (token, userId) => {
+export const fetchUserBoards = async (userId) => {
     try {
-        const data = await axios.get(BACKEND_URL+"/boards/user/"+userId, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }      
-        })
+        const data = await axios.get(BACKEND_URL+"/boards/user/"+userId)
         return data.data
     } catch (error) {
         console.error("Error fetching user boards:", error);
@@ -83,14 +67,9 @@ export const fetchUserBoards = async (token, userId) => {
     }
 }
 
-export const fetchCompleteUserBoard = async (token,boardId) => {  
+export const fetchCompleteUserBoard = async (boardId) => {  
     try {
-        const data = await axios.get(BACKEND_URL+"/boards/"+boardId, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }      
-        })
-        console.log("Board:", data)
+        const data = await axios.get(BACKEND_URL+"/boards/"+boardId)
         return data.data
     } catch (error) {
         console.error("Error fetching user board:", error);
@@ -98,13 +77,9 @@ export const fetchCompleteUserBoard = async (token,boardId) => {
     }
 }
 
-export const createUserBoard = async (token,board) => {
+export const createUserBoard = async (board) => {
     try {
-        const data = await axios.post(BACKEND_URL+"/boards", board, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }      
-        })
+        const data = await axios.post(BACKEND_URL+"/boards", board)
         return data.data
     } catch (error) {
         console.error("Error creating user board:", error);
@@ -112,13 +87,9 @@ export const createUserBoard = async (token,board) => {
     }
 }
 
-export const updateUserBoardData = async (token,data, id) => {
+export const updateUserBoardData = async (data, id) => {
     try {
-        const response = await axios.put(BACKEND_URL+"/boards/"+id, data, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }      
-        })
+        const response = await axios.put(BACKEND_URL+"/boards/"+id, data)
         return response.data
     } catch (error) {
         console.error("Error updating user board:", error);
@@ -126,13 +97,9 @@ export const updateUserBoardData = async (token,data, id) => {
     }
 }
 
-export const deleteUserBoard = async (token,boardId) => {
+export const deleteUserBoard = async (boardId) => {
     try {
-        const data = await axios.delete(BACKEND_URL+"/boards/"+boardId, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }      
-        })
+        const data = await axios.delete(BACKEND_URL+"/boards/"+boardId)
         return data.data
     } catch (error) {
         console.error("Error deleting user board:", error);

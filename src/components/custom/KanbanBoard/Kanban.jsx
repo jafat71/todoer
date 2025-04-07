@@ -13,7 +13,6 @@ import { addUserTask, deleteUserTask, updateUserTask } from "@/services/actions"
 import { getPriorityColor, KANBAN_COLUMNS, PRIORITY_OPTIONS } from "@/constants";
 import { LucideDelete, LucideEdit2 } from "lucide-react";
 import KanbanItemAlertDialog from "./KanbanItemAlertDialog";
-import { useUserContext } from "@/contexts/UserContext/UserContext";
 
 const Kanban = ({boardId = "", demo=false}) => {
     const { isLoading, kanbanObject, setKanbanObject } = useTodoerContext();
@@ -24,7 +23,6 @@ const Kanban = ({boardId = "", demo=false}) => {
     const [activeTask, setActiveTask] = useState(null);
     const [currentTask, setCurrentTask] = useState(null);
     const [selectedPriority, setSelectedPriority] = useState(PRIORITY_OPTIONS[0]);
-    const {token} = useUserContext()
 
     const buildTaskBodyFromColumn = (columns,task,columnId) => {
         let tempTask = {
@@ -51,7 +49,7 @@ const Kanban = ({boardId = "", demo=false}) => {
     const handleAddTask = useCallback(async (task, columnId) => {
         const tmpTask = buildTaskBodyFromColumn(KANBAN_COLUMNS,task,columnId);
         tmpTask.board_id = boardId;
-        return await addUserTask(token,tmpTask);
+        return await addUserTask(tmpTask);
     }, []);
 
     const handleDragEnd = useCallback(async (event) => {
@@ -84,7 +82,7 @@ const Kanban = ({boardId = "", demo=false}) => {
             tmpMovedTask.board_id = boardId;
             if (!demo) {    
                 try {
-                    await updateUserTask(token,tmpMovedTask);   
+                    await updateUserTask(tmpMovedTask);   
                 } catch (error) {
                     console.log(error);
                     alert(error);
@@ -154,7 +152,7 @@ const Kanban = ({boardId = "", demo=false}) => {
                 priority: selectedPriority,
             };
             try {
-                const updatedTaskResponse = await updateUserTask(token,tmpTask);
+                const updatedTaskResponse = await updateUserTask(tmpTask);
 
                 if (updatedTaskResponse && updatedTaskResponse.success) {
                     setKanbanObject((prevColumns) => {
@@ -194,7 +192,7 @@ const Kanban = ({boardId = "", demo=false}) => {
             },
         }));
         try {
-            await deleteUserTask(token,taskId);
+            await deleteUserTask(taskId);
         } catch (error) {
             console.log(error);
             alert(error);

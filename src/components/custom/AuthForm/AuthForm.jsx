@@ -12,7 +12,7 @@ const AuthForm = () => {
   const [authMode, setAuthMode] = useState("login");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { setUser, setToken, setisLogged } = useUserContext();
+  const { setUser, setIsLogged } = useUserContext();
   const toast = useCustomToast();
 
   const handleLogin = async (data) => {
@@ -20,13 +20,13 @@ const AuthForm = () => {
     try {
       const resp = await loginUser(data.email, data.password);
       if (resp.success) {
-        toast.success("Inicio de sesión exitoso");
-        setisLogged(true)
-        setUser(resp.response.user)
-        setToken(resp.response.token)
+        toast.success("Inicio de sesión exitoso", "¡Bienvenido!");
+        setIsLogged(true);
+        setUser(resp.user);
         navigate("/home");
       }
     } catch (error) {
+      console.log(error)
       const errorMessage = error.response?.data?.message || 
                           error.message || 
                           "Error al iniciar sesión";
@@ -42,13 +42,12 @@ const AuthForm = () => {
       const resp = await registerUser(data.username, data.email, data.password);
       if (resp.success) {
         toast.success("Tu cuenta ha sido creada exitosamente.", "¡Cuenta creada!");
-        setisLogged(true)
-        setUser(resp.response.user)
-        setToken(resp.response.token)
+        setIsLogged(true);
+        setUser(resp.user);
         navigate("/home");
       }
     } catch (e) {
-      toast.error(e|| "Error al crear la cuenta");
+      toast.error(e || "Error al crear la cuenta");
     } finally {
       setIsLoading(false);
     }
@@ -61,7 +60,6 @@ const AuthForm = () => {
         await sendResetEmail(data.email);
         toast.success("Código de verificación enviado", "¡Correo enviado!");
       } else {
-        console.log(data)
         await resetPasswordWithCode(data.code, data.password);
         toast.success("Contraseña actualizada exitosamente");
         setAuthMode("login");

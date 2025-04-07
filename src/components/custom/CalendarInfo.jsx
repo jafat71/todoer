@@ -130,7 +130,7 @@ const CalendarInfo = ({ board, isLoading }) => {
             <input 
               type="text"
               disabled={!enableEdit}
-              className="text-2xl font-bold text-center bg-transparent border-none  "
+              className="text-2xl font-bold text-start bg-transparent border-none  "
               value={boardName}
               onChange={(e) => setBoardName(e.target.value)}
             />
