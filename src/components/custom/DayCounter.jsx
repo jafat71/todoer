@@ -12,7 +12,6 @@ const DayCounter = () => {
     const [startDateIsBeforeToday, setStartDateIsBeforeToday] = useState(false);
     useEffect(() => {
         if (!dates) return; 
-        console.log("Dates:", dates)
 
         const startDate = new Date(dates.fromDate);
         const today = new Date();
@@ -25,7 +24,7 @@ const DayCounter = () => {
     
 
     return (
-        <Card className="text-center bg-black w-full  rounded-xl h-[350px] lg:h-[430px]">
+        <Card className="text-center rounded-md">
             <CardHeader>
                 <CardTitle className="text-2xl font-bold text-white">Time Left</CardTitle>
             </CardHeader>

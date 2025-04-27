@@ -25,7 +25,6 @@ import {
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { updateUserBoardData } from "@/services/actions";
 import { useTodoerContext } from "@/contexts/TodoerContext/TodoerContext";
-import { useUserContext } from "@/contexts/UserContext/UserContext";
 
 const FormSchema = z.object({
   fromDate: z.date({
@@ -40,8 +39,6 @@ const CalendarInfo = ({ board, isLoading }) => {
   const {setDates} = useTodoerContext()
   const [boardName, setBoardName] = useState(board?.title);
   const [enableEdit, setEnableEdit] = useState(false);
-
-  const {token} = useUserContext()
 
   const form = useForm({
     resolver: zodResolver(FormSchema),
@@ -83,7 +80,7 @@ const CalendarInfo = ({ board, isLoading }) => {
         from_date: data.fromDate ? new Date(data.fromDate).toISOString() : null,
         to_date: data.toDate ? new Date(data.toDate).toISOString() : null
       };  
-      const response = await updateUserBoardData(token,boardData, board.id);
+      const response = await updateUserBoardData(boardData, board.id);
       const newDates = {
         fromDate: response.board.from_date,
         toDate: response.board.to_date
@@ -106,7 +103,7 @@ const CalendarInfo = ({ board, isLoading }) => {
   if (isLoading) {
     return (
       <div className="w-full">
-        <Card className="rounded-xl h-[350px] p-4">
+        <Card className="rounded-md p-4">
           <CardHeader>
             <div className="h-12 w-full bg-voidBlack opacity-20" />
           </CardHeader>
@@ -123,8 +120,8 @@ const CalendarInfo = ({ board, isLoading }) => {
   }
 
   return (
-    <div className="w-full">
-      <Card className="rounded-xl h-[350px]">
+    <div className="w-1/2 lg:w-full">
+      <Card className="rounded-md h-full">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">
             <input 
