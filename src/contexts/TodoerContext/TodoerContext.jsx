@@ -15,6 +15,7 @@ export const TodoerProvider = ({ children }) => {
     const [daysRemaining, setDaysRemaining] = useState(0);
     const [kanbanObject, setKanbanObject] = useState({});
     const [isLoading, setisLoading] = useState(true);
+    const [randomTask, setRandomTask] = useState(null);
 
     const setNoLoggeKanbanBoard =  async (columns = KANBAN_COLUMNS) => {
         setisLoading(true)
@@ -68,6 +69,13 @@ export const TodoerProvider = ({ children }) => {
         calculateRemain()
     }, [dates]);
 
+    useEffect(() => {
+        console.log(randomTask);
+        setTimeout(() => {
+            setRandomTask(null);
+        }, 3000);
+    }, [randomTask]);    
+
     return (
         <TodoerContext.Provider value={{
             setDates,
@@ -79,6 +87,8 @@ export const TodoerProvider = ({ children }) => {
             isLoading,
             setKanbanBoard,
             setNoLoggeKanbanBoard,
+            randomTask,
+            setRandomTask,
         }}>
             {children}
         </TodoerContext.Provider>

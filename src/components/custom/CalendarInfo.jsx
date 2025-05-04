@@ -123,14 +123,18 @@ const CalendarInfo = ({ board, isLoading }) => {
     <div className="w-1/2 lg:w-full">
       <Card className="rounded-md h-full">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">
-            <input 
-              type="text"
-              disabled={!enableEdit}
-              className="text-2xl font-bold text-start bg-transparent border-none  "
-              value={boardName}
-              onChange={(e) => setBoardName(e.target.value)}
-            />
+          <CardTitle className="text-2xl font-bold text-center min-h-[2.5rem]">
+            {enableEdit ? (
+              <input 
+                type="text"
+                className="w-full text-2xl font-bold text-center bg-transparent border-b-2 border-f2green focus:outline-none focus:border-fgreen transition-colors"
+                value={boardName}
+                onChange={(e) => setBoardName(e.target.value)}
+                placeholder="Board name"
+              />
+            ) : (
+              <span className="block w-full text-start">{boardName}</span>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent>

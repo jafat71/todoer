@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { DndContext, closestCenter, DragOverlay } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { DroppableContainer } from "./DroppableContainer";
@@ -15,7 +15,7 @@ import { LucideDelete, LucideEdit2 } from "lucide-react";
 import KanbanItemAlertDialog from "./KanbanItemAlertDialog";
 
 const Kanban = ({boardId = "", demo=false}) => {
-    const { isLoading, kanbanObject, setKanbanObject } = useTodoerContext();
+    const { isLoading, kanbanObject, setKanbanObject, randomTask } = useTodoerContext();
     const [newTaskTitle, setNewTaskTitle] = useState("");
     const [selectedColumn, setSelectedColumn] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
@@ -23,6 +23,17 @@ const Kanban = ({boardId = "", demo=false}) => {
     const [activeTask, setActiveTask] = useState(null);
     const [currentTask, setCurrentTask] = useState(null);
     const [selectedPriority, setSelectedPriority] = useState(PRIORITY_OPTIONS[0]);
+    const randomTaskRef = useRef(null);
+
+    useEffect(() => {
+        if (randomTask && randomTaskRef.current) {
+            randomTaskRef.current.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+                inline: 'center'
+            });
+        }
+    }, [randomTask]);
 
     const buildTaskBodyFromColumn = (columns,task,columnId) => {
         let tempTask = {
@@ -226,10 +237,10 @@ const Kanban = ({boardId = "", demo=false}) => {
                 {Object.entries(kanbanObject).map(([columnId, column]) => (
                     <Card
                         key={columnId}
-                        className="flex flex-col flex-1 min-w-[100px] md:min-w-[170px] xl:min-w-[275px] bg-voidBlack"
+                        className="flex flex-col flex-1 text-center min-w-[50px] md:min-w-[170px] xl:min-w-[275px] bg-voidBlack"
                     >
                         <CardHeader>
-                            <CardTitle className="text-f2green text-2xl">
+                            <CardTitle className="text-f2green text-sm sm:text-base md:text-xl lg:text-2xl text-start ">
                                 {column.title}
                             </CardTitle>
                         </CardHeader>
@@ -242,10 +253,15 @@ const Kanban = ({boardId = "", demo=false}) => {
                                 <DroppableContainer id={columnId}>
                                     {column.tasks.map((task) => (
                                         <SortableItem key={task.id} id={task.id}>
-                                            <div className="p-2 w-full my-2 bg-voidBlack 
-                                            border-2 border-f2green text-white
-                                            rounded-md shadow-sm flex flex-col space-y-2">
-                                                <div className="text-sm break-words">{task.title}</div>
+                                            <div 
+                                                ref={task.id === randomTask?.id ? randomTaskRef : null}
+                                                className={`p-2 w-full my-2 
+                                                border-2 border-f2green text-white
+                                                rounded-md shadow-sm flex flex-col space-y-2 
+                                                transition-all duration-500
+                                                ${task.id === randomTask?.id ? "bg-f2green text-voidBlack scale-105" : "bg-voidBlack"}`}
+                                            >
+                                                <div className="text-sm lg:text-base break-words">{task.title}</div>
                                                 <div className="flex justify-end space-x-2">
                                                     <Button
                                                         className="w-8"
@@ -287,13 +303,13 @@ const Kanban = ({boardId = "", demo=false}) => {
                             !demo && (
                                 <Button
                                     onClick={() => handleAddTaskClick(columnId)}
-                            className="mt-auto bg-fgreen hover:text-white transition-all duration-300  m-2"
-                        >
-                            <div className="text-black font-semibold text-lg w-full h-full ">
-                                Add Task
-                                </div>
-                            </Button>
-                        )}
+                                    className="mt-auto bg-fgreen hover:text-white transition-all duration-300 m-2"
+                                >
+                                    <div className="text-black font-semibold text-lg w-full h-full">
+                                        Add Task
+                                    </div>
+                                </Button>
+                            )}
                     </Card>
                 ))}
             </div>

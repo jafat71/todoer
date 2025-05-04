@@ -2,9 +2,8 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { useTodoerContext } from "@/contexts/TodoerContext/TodoerContext";
 import { useEffect, useState } from "react";
-import { KANBAN_COLUMNS } from "@/constants";
 
-const Stats = (columns = KANBAN_COLUMNS) => {
+const Stats = () => {
     const { kanbanObject } = useTodoerContext();
     const [column1, setColumn1] = useState(0);
     const [column2, setColumn2] = useState(0);
@@ -51,30 +50,28 @@ const Stats = (columns = KANBAN_COLUMNS) => {
     const COLORS = ["#89f336", "#fff"];
 
     return (
-        <Card className="text-center w-full rounded-xl h-full">
+        <Card className="w-full rounded-xl">
             <CardHeader>
-                <CardTitle className="text-2xl font-bold text-fgreen ">Stats</CardTitle>
+                <CardTitle className="text-f2green text-2xl">STATS</CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-row lg:flex-col items-start lg:items-center">
-                <div className="w-1/2 items-center justify-center ">
-
-                    <div className="text-2xl font-bold text-center mt-2 sm:mt-4 text-f2green">Resume</div>
+            <CardContent className="flex flex-col text-center ">
+                <div className="w-full">
                     <div className="w-full flex flex-row lg:flex-col items-center justify-around">
                         <div className="flex flex-col items-center justify-around">
                             <div>
-                                <div className="text-3xl md:text-4xl lg:text-5xl text-white">
+                                <div className="text-5xl md:text-6xl lg:text-8xl text-white">
                                     {column1}
                                 </div>
                                 <div className="text-white">TO DO</div>
                             </div>
                             <div>
-                                <div className="text-3xl md:text-4xl lg:text-5xl text-white">
+                                <div className="text-5xl md:text-6xl lg:text-8xl text-white">
                                     {column2}
                                 </div>
                                 <div className="text-white">Doing</div>
                             </div>
                             <div>
-                                <div className="text-3xl md:text-4xl lg:text-5xl text-white">
+                                <div className="text-5xl md:text-6xl lg:text-8xl text-white">
                                     {column3}
                                 </div>
                                 <div className="text-white">Done</div>
@@ -88,18 +85,18 @@ const Stats = (columns = KANBAN_COLUMNS) => {
                         </div>
                     </div>
                 </div>
-                <div className="w-1/2 lg:w-full flex flex-col-reverse ">
+                <div className="w-full flex flex-col-reverse">
                     <ResponsiveContainer
                         width="100%"
-                        height={window.innerWidth < 640 ? 150 : 250}
+                        height={250}
                     >
                         <PieChart>
                             <Pie
                                 data={data}
                                 cx="50%"
                                 cy="50%"
-                                innerRadius={window.innerWidth < 640 ? "35%" : "40%"}
-                                outerRadius={window.innerWidth < 640 ? "60%" : "70%"}
+                                innerRadius={"40%"}
+                                outerRadius={"70%"}
                                 paddingAngle={5}
                                 dataKey="value"
                             >
@@ -117,7 +114,7 @@ const Stats = (columns = KANBAN_COLUMNS) => {
                         <div className="text-2xl font-bold text-f2green">Achieved</div>
 
                         <div className="flex flex-col items-center justify-center">
-                            <div className="text-3xl md:text-4xl lg:text-5xl">
+                            <div className="text-5xl md:text-6xl lg:text-8xl">
                                 {progressPercentage}%
                             </div>
                             <div className="text-white">In total</div>

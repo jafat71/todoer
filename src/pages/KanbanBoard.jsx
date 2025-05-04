@@ -2,17 +2,16 @@ import CalendarInfo from "@/components/custom/CalendarInfo";
 import DayCounter from "@/components/custom/DayCounter";
 import Kanban from "@/components/custom/KanbanBoard/Kanban";
 import Stats from "@/components/custom/Stats";
-import { KANBAN_COLUMNS } from "@/constants";
 import { useTodoerContext } from "@/contexts/TodoerContext/TodoerContext";
 import { deleteUserBoard, fetchCompleteUserBoard } from "@/services/actions";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Download, Trash, Loader2 } from "lucide-react";
+import { ArrowLeft, Download, Trash, Loader2, Dices } from "lucide-react";
 import usePDFMake from "@/hooks/use-PDFMake";
 import { useUserContext } from "@/contexts/UserContext/UserContext";
 
 const KanbanBoard = () => {
-    const { setKanbanBoard, setDates} = useTodoerContext();
+    const { setKanbanBoard, setDates,kanbanObject, setRandomTask } = useTodoerContext();
     const { id } = useParams();
     const [board, setBoard] = useState({});
     const [isLoading, setIsLoading] = useState(true);
@@ -55,6 +54,17 @@ const KanbanBoard = () => {
         }
     };
 
+    const handleGetRandomTask = () => {
+        //Choose task from TODO - DOING column on Kanban Board Object
+        const possibleTasks = [...kanbanObject.DOING.tasks, ...kanbanObject.TODO.tasks];
+        if (possibleTasks.length === 0) {
+            alert("No tasks in TODO or DOING columns found");
+            return;
+        }
+        const randomTask = possibleTasks[Math.floor(Math.random() * possibleTasks.length)];
+        setRandomTask(randomTask);
+    };
+
     useEffect(() => {
         if (!isUserLoading) {
             (async () => {
@@ -76,7 +86,7 @@ const KanbanBoard = () => {
 
     return (
         <>
-            <div className="min-h-screen flex flex-col items-center justify-center px-4 border-t-2 border-slate-200 p-4 rounded-lg">
+            <div className="flex flex-col items-center justify-center px-4 border-t-2 border-slate-200 p-4 rounded-lg">
                 <h2 className="lg:hidden text-6xl font-extrabold mb-4 text-white">KNBNN</h2>
 
                 <div className="w-full flex flex-row justify-between my-2 gap-2">
@@ -87,6 +97,12 @@ const KanbanBoard = () => {
                         <ArrowLeft className="w-6 h-6 text-black" />
                     </button>
                     <div className="flex flex-row gap-2">
+                    <button
+                            onClick={handleGetRandomTask}
+                            className="bg-f2green  text-black px-2 py-1 rounded hover:bg-fgreen hover:scale-105 transition-all duration-300"
+                        >
+                            <Dices className="w-6 h-6 text-black" />
+                        </button>
                         <button
                             onClick={handleDeleteBoard}
                             className="bg-f2green  text-black px-2 py-1 rounded hover:bg-fgreen hover:scale-105 transition-all duration-300"
@@ -107,18 +123,18 @@ const KanbanBoard = () => {
                         <Loader2 className="w-12 h-12 animate-spin text-f2green" />
                     </div>
                 ) : (
-                    <div className="flex flex-col gap-2 w-full max-w-8xl lg:flex-row">
-                        <div className="flex flex-row gap-2 w-full lg:w-1/4 lg:flex-col">
+                    <div className="flex flex-col w-full lg:flex-row">
+                        <div className="flex flex-row w-full lg:w-1/4 lg:flex-col">
                             <CalendarInfo board={board} isLoading={isLoading} />
-                            <DayCounter className="flex-1" />
+                            <DayCounter />
                         </div>
 
-                        <div className="flex flex-col gap-2 w-full lg:w-3/4">
-                            <Kanban className="w-full h-full" boardId={id} />
+                        <div className="flex flex-col w-full lg:w-3/4">
+                            <Kanban boardId={id} />
                         </div>
 
-                        <div className="flex flex-row gap-2 w-full lg:w-1/4 lg:flex-col">
-                            <Stats className="flex-1" columns={KANBAN_COLUMNS} />
+                        <div className="flex flex-row w-full lg:w-1/4 lg:flex-col">
+                            <Stats/>
                         </div>
                     </div>
                 )}
