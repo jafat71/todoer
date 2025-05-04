@@ -10,6 +10,7 @@ import Auth from '@/pages/Auth';
 import { useUserContext } from '@/contexts/UserContext/UserContext';
 import Footer from '@/components/custom/Footer/Footer';
 import Navbar from '@/components/custom/Header/Navbar';
+import SettingsPage from '@/pages/SettingsPage';
 
 const ProtectedRoute = ({ children }) => {
     const { isLogged } = useUserContext();
@@ -43,6 +44,11 @@ const AppRouter = () => {
                         <Route path="/kanban/:id" element={
                             <ProtectedRoute>
                                 <KanbanBoard />
+                            </ProtectedRoute>
+                        } />
+                        <Route path="/settings" element={
+                            <ProtectedRoute>
+                                <SettingsPage />
                             </ProtectedRoute>
                         } />
                     </Routes>

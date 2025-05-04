@@ -41,7 +41,7 @@ const Navbar = () => {
       {isLogged && user ? (
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="ghost" className="flex items-center gap-2 hover:bg-neutral-800">
+            <Button variant="ghost" className="flex items-center gap-2 hover:bg-voidBlack hover:text-f2green">
               <span className="text-sm">{user.username}</span>
               <LucideUser2 className="h-5 w-5" />
             </Button>
@@ -53,7 +53,7 @@ const Navbar = () => {
               </div>
               <Button 
                 variant="ghost" 
-                className="justify-start text-sm hover:bg-neutral-800"
+                className="justify-start text-sm hover:bg-neutral-800 hover:text-f2green"
                 onClick={() => navigate("/settings")}
               >
                 <LucideSettings className="mr-2 h-4 w-4" />

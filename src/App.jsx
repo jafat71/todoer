@@ -1,18 +1,28 @@
 import { TodoerProvider } from "./contexts/TodoerContext/TodoerContext";
 import { UserProvider } from "./contexts/UserContext/UserContext";
+import { ThemeProvider, useTheme } from "./contexts/ThemeContext/ThemeContext";
 import AppRouter from "./routes";
 import { Toaster } from "@/components/ui/toaster"
 
+const AppContent = () => {
+  const { theme } = useTheme();
+  return (
+    <div className={`min-h-screen transition-colors duration-300 bg-${theme}`}>
+      <AppRouter />
+      <Toaster />
+    </div>
+  );
+};
+
 const App = () => {
   return (
-    <UserProvider>
-      <TodoerProvider>
-        <div className="bg-voidBlack">
-          <AppRouter />
-        </div>
-        <Toaster />
-      </TodoerProvider>
-    </UserProvider>
+    <ThemeProvider>
+      <UserProvider>
+        <TodoerProvider>
+          <AppContent />
+        </TodoerProvider>
+      </UserProvider>
+    </ThemeProvider>
   );
 };
 

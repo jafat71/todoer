@@ -107,3 +107,17 @@ export const deleteUserBoard = async (boardId) => {
     }
 }
 
+
+export const updateUserInfo = async (userId, username) => {
+    const body = {username}
+    try {
+        const data = await axios.put(BACKEND_URL+"/users/"+userId, body)
+        return data.status
+    } catch (error) {
+        if (error.response && error.response.data) {
+            throw error.response.data;
+        } else {
+            throw error;
+        }
+    }
+}
