@@ -1,20 +1,10 @@
 import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import onboardImage from "@/assets/onboard.png";
 import AuthForm from "@/components/custom/AuthForm/AuthForm";
-import { useNavigate } from "react-router-dom";
-import { useUserContext } from "@/contexts/UserContext/UserContext";
 
 const Auth = () => {
   const [imageLoaded, setImageLoaded] = useState(false);
-  const {isLogged} = useUserContext()
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    if (isLogged) {
-      navigate("/home")
-    }
-  }, [isLogged, navigate])
 
   return (
     <div className="min-h-screen bg-f2green flex items-center justify-center p-4 lg:p-8">

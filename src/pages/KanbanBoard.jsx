@@ -20,8 +20,6 @@ const KanbanBoard = () => {
 
     const navigate = useNavigate();
 
-    //TODO: Mejorar pagina Kanban, Agreagr pagina config
-
     const getBoardData = async () => {
         setIsLoading(true);
         try {

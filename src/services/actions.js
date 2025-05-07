@@ -121,3 +121,4 @@ export const updateUserInfo = async (userId, username) => {
         }
     }
 }
+

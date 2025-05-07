@@ -7,7 +7,7 @@ import LogoSvg from "../../../assets/logo.svg";
 import { useUserContext } from "@/contexts/UserContext/UserContext";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Navbar = () => {
   const { isLogged, user, logout } = useUserContext();
@@ -23,7 +23,7 @@ const Navbar = () => {
   return (
     <div className="w-full text-white p-2 flex flex-row justify-between items-center bg-voidBlack">
       <ul className="flex flex-row items-center gap-x-4">
-        <a href={isLogged ? "/home" : "/"}>
+        <Link to={isLogged ? "/home" : "/"}>
           <img
             src={LogoSvg}
             alt="logo"
@@ -31,7 +31,7 @@ const Navbar = () => {
                 hover:scale-110 hover:rotate-90 
                 transition-all duration-300"
           />
-        </a>
+        </Link>
       </ul>
 
       <div className="hidden lg:flex absolute left-1/2 transform -translate-x-1/2 text-2xl font-extrabold">
@@ -51,14 +51,13 @@ const Navbar = () => {
               <div className="px-2 py-1.5 text-sm font-medium border-b border-neutral-800">
                 {user.email}
               </div>
-              <Button 
-                variant="ghost" 
-                className="justify-start text-sm hover:bg-neutral-800 hover:text-f2green"
-                onClick={() => navigate("/settings")}
+              <Link 
+                to="/settings"
+                className="flex items-center px-2 py-1.5 text-sm hover:bg-neutral-800 hover:text-f2green cursor-pointer"
               >
                 <LucideSettings className="mr-2 h-4 w-4" />
                 Settings
-              </Button>
+              </Link>
               <Button 
                 variant="ghost" 
                 className="justify-start text-sm text-red-400 hover:bg-red-900/20 hover:text-red-300"
@@ -71,7 +70,7 @@ const Navbar = () => {
           </PopoverContent>
         </Popover>
       ) : (
-        <a href={"/auth"}>Login</a>
+        <Link to="/auth">Login</Link>
       )}
     </div>
   );

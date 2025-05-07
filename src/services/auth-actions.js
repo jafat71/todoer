@@ -80,3 +80,30 @@ export const resetPasswordWithCode = async (code, password) => {
         }
     }
 }
+
+export const inactivateUser = async (userId) => {
+    try {
+        const data = await axios.post(BACKEND_URL+`/users/${userId}/inactivate`)
+        return data.data
+    } catch (error) {
+        if (error.response && error.response.data) {
+            throw error.response.data;
+        } else {
+            throw error;
+        }
+    }
+}
+
+export const activateUser = async (userId) => {
+    try {
+        const data = await axios.post(BACKEND_URL+`/users/${userId}/activate`)
+        return data.data
+    } catch (error) {
+        if (error.response && error.response.data) {
+            throw error.response.data;
+        } else {
+            throw error;
+        }
+    }   
+}
+

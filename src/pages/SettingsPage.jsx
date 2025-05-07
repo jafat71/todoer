@@ -5,11 +5,23 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
-import { Loader2, Pencil, Save, X } from "lucide-react";
+import { Loader2, Pencil, Save, X, AlertTriangle } from "lucide-react";
 import { useCustomToast } from "@/hooks/useCustomToast";
 import settingsImage from "@/assets/settings.png";
 import { updateUserInfo } from "@/services/actions";
 import { z } from "zod";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { inactivateUser } from "@/services/auth-actions";
 
 // Schema de validación para el username
 const usernameSchema = z.object({
@@ -20,7 +32,7 @@ const usernameSchema = z.object({
 });
 
 const SettingsPage = () => {
-  const { user, setUser } = useUserContext();
+  const { user, setUser, logout } = useUserContext();
   const { theme, changeTheme } = useTheme();
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -70,6 +82,21 @@ const SettingsPage = () => {
     setIsEditing(false);
     setNewUsername(user?.username || "");
     setError("");
+  };
+
+  const handleDeactivateAccount = async () => {
+    try {
+      setIsLoading(true);
+      const response = await inactivateUser(user.id);
+      if (response.success) {
+        toast.success("Account deactivated successfully", response.message);
+        await logout();
+      }
+    } catch (error) {
+      toast.error(error.message || "Error deactivating account", "Deactivation failed");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const colors = [
@@ -189,6 +216,60 @@ const SettingsPage = () => {
                     />
                   ))}
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Danger Zone Card */}
+          <Card className="bg-voidBlack/50 border-red-500/20">
+            <CardHeader>
+              <CardTitle className="text-red-500 flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5" />
+                Danger Zone
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <p className="text-neutral-400">
+                  Once you deactivate your account, you will not be able to access your data or boards.
+                  This action can be reversed within 30 days.
+                </p>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button 
+                      variant="destructive" 
+                      className="bg-red-500/10 text-red-500 border-red-500 hover:bg-red-500/20"
+                    >
+                      Deactivate Account
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent className="bg-voidBlack border-red-500/20">
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="text-red-500">Are you absolutely sure?</AlertDialogTitle>
+                      <AlertDialogDescription className="text-neutral-400">
+                        This action will deactivate your account. You will not be able to access your data or boards.
+                        This action can be reversed within 30 days by logging in again.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel className="bg-voidBlack border-f2green text-f2green hover:bg-f2green/10">
+                        Cancel
+                      </AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleDeactivateAccount}
+                        className="bg-red-500 text-white hover:bg-red-600"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? (
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        ) : (
+                          <AlertTriangle className="h-4 w-4 mr-2" />
+                        )}
+                        Yes, deactivate my account
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </CardContent>
           </Card>
