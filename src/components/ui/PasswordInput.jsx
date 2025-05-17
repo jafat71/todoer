@@ -13,7 +13,7 @@ const PasswordInput = ({ field, placeholder = "••••••••", ...pro
         {...props}
         type={showPassword ? "text" : "password"} 
         placeholder={placeholder}
-        className="pl-10 pr-10 bg-black/20 border-slate-700 text-white" 
+        className="pl-10 pr-10 bg-black/20 border-f2green text-white" 
       />
       <button
         type="button"
@@ -21,9 +21,9 @@ const PasswordInput = ({ field, placeholder = "••••••••", ...pro
         className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-white"
       >
         {showPassword ? (
-          <EyeOff className="h-5 w-5" />
+          <EyeOff className="h-5 w-5 text-f2green" />
         ) : (
-          <Eye className="h-5 w-5" />
+          <Eye className="h-5 w-5 text-f2green" />
         )}
       </button>
     </div>

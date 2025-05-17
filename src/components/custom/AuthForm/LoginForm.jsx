@@ -31,19 +31,19 @@ const LoginForm = ({ onSubmit, isLoading, onRegisterClick, onResetClick }) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex flex-col min-h-[320px]">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex flex-col min-h-[420px]">
         <div className="space-y-4">
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-white">Email</FormLabel>
+                <FormLabel className="text-white font-light">Email</FormLabel>
                 <FormControl>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
                     <Input {...field} type="email" placeholder="email@example.com" 
-                      className="pl-10 bg-black/20 border-slate-700 text-white" />
+                      className="pl-10 bg-black/20 border-f2green text-white" />
                   </div>
                 </FormControl>
                 <FormMessage />
@@ -56,7 +56,7 @@ const LoginForm = ({ onSubmit, isLoading, onRegisterClick, onResetClick }) => {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-white">Password</FormLabel>
+                <FormLabel className="text-white font-light">Password</FormLabel>
                 <FormControl>
                   <PasswordInput field={field} />
                 </FormControl>
@@ -79,7 +79,7 @@ const LoginForm = ({ onSubmit, isLoading, onRegisterClick, onResetClick }) => {
             <Button
               type="button"
               variant="ghost"
-              className="w-full text-slate-400 hover:text-f2green hover:bg-slate-800/50"
+              className="w-full text-slate-400 hover:text-f2green hover:bg-voidBlack/50"
               onClick={onRegisterClick}
             >
               Don&apos;t have an account? Sign Up
@@ -87,7 +87,7 @@ const LoginForm = ({ onSubmit, isLoading, onRegisterClick, onResetClick }) => {
             <Button
               type="button"
               variant="ghost"
-              className="w-full text-slate-400 hover:text-f2green hover:bg-slate-800/50"
+              className="w-full text-slate-400 hover:text-f2green hover:bg-voidBlack/50"
               onClick={onResetClick}
             >
               Forgot your password?

@@ -27,9 +27,9 @@ const AuthForm = () => {
       }
     } catch (error) {
       console.log(error)
-      const errorMessage = error.response?.data?.message || 
-                          error.message || 
-                          "Error al iniciar sesión";
+      const errorMessage = error.response?.data?.message ||
+        error.message ||
+        "Error al iniciar sesión";
       toast.error(errorMessage, "Error de autenticación");
     } finally {
       setIsLoading(false);
@@ -66,9 +66,9 @@ const AuthForm = () => {
       }
     } catch (error) {
       toast.error(
-        error.message || 
-        (data.step === 'email' 
-          ? "Error al enviar el código" 
+        error.message ||
+        (data.step === 'email'
+          ? "Error al enviar el código"
           : "Error al restablecer la contraseña")
       );
     } finally {
@@ -77,16 +77,16 @@ const AuthForm = () => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      <Card className="rounded-2xl shadow-lg p-6 bg-black/40 backdrop-blur-sm border-slate-800 min-h-[500px] flex flex-col">
+    <div className="w-full h-full max-w-md max-h-max mx-auto">
+      <Card className="w-full rounded-2xl shadow-lg p-6 bg-black/30 border border-f2green">
         <CardHeader className="flex-none">
-          <CardTitle className="text-3xl font-bold text-center text-white">
-            {authMode === "login" ? "Welcome Back" : 
-             authMode === "register" ? "Create Account" : 
-             "Forgot Password"}
+          <CardTitle className="text-3xl font-light text-center text-white">
+            {authMode === "login" ? "Login" :
+              authMode === "register" ? "Create Account" :
+                "Forgot Password"}
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex-1 flex flex-col justify-between">
+        <CardContent className="flex flex-col ">
           {authMode === "login" && (
             <LoginForm
               onSubmit={handleLogin}
@@ -95,7 +95,7 @@ const AuthForm = () => {
               onResetClick={() => setAuthMode("reset")}
             />
           )}
-          
+
           {authMode === "register" && (
             <RegisterForm
               onSubmit={handleRegister}
@@ -103,7 +103,7 @@ const AuthForm = () => {
               onBackToLogin={() => setAuthMode("login")}
             />
           )}
-          
+
           {authMode === "reset" && (
             <ResetPasswordForm
               onSubmit={handleReset}

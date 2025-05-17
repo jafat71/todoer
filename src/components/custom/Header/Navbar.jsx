@@ -39,7 +39,7 @@ const Navbar = () => {
             <img
               src={LogoSvg}
               alt="logo"
-              className="h-8 w-8 hover:scale-110 hover:rotate-90 transition-all duration-300"
+              className="h-8 w-8 hover:scale-110 transition-all duration-300"
             />
           </Link>
           {isLogged && user ? (
@@ -117,7 +117,7 @@ const Navbar = () => {
           <img
             src={LogoSvg}
             alt="logo"
-            className="h-10 w-10 hover:scale-110 hover:rotate-90 transition-all duration-300"
+            className="h-10 w-10 hover:scale-110 transition-all duration-300"
           />
         </Link>
 

@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
 import { Link } from 'react-router-dom'
 
-const SecondaryButton = ({ icon, text, link }) => {
+const SecondaryButton = ({ icon, text, link, onClick }) => {
   return (
-    <div>
+    <div onClick={onClick}>
       <Link to={link} 
         className="bg-voidBlack text-white
         flex flex-row items-center justify-center

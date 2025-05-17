@@ -3,7 +3,7 @@ import { Github } from "lucide-react";
 const Footer = () => {
 
   return (
-    <footer className="w-full bg-voidBlack border-t border-neutral-800">
+    <footer className="w-full z-10 border-t border-neutral-800">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
@@ -18,7 +18,7 @@ const Footer = () => {
           <div className="flex justify-end">
             <div className="flex space-x-4">
               <a
-                href="https://github.com"
+                href="https://github.com/jafat71/todoerbk"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-neutral-400 hover:text-f2green transition-colors"
