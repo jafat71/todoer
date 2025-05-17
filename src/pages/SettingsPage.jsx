@@ -5,9 +5,9 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
-import { Loader2, Pencil, Save, X, AlertTriangle } from "lucide-react";
+import { Loader2, Pencil, Save, X, AlertTriangle, User, Mail, Calendar, Palette } from "lucide-react";
 import { useCustomToast } from "@/hooks/useCustomToast";
-import settingsImage from "@/assets/settings.png";
+import settingsImage from "@/assets/config.webp";
 import { updateUserInfo } from "@/services/actions";
 import { z } from "zod";
 import {
@@ -22,6 +22,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { inactivateUser } from "@/services/auth-actions";
+import blurBackground from "@/assets/blurs.webp";
 
 // Schema de validación para el username
 const usernameSchema = z.object({
@@ -107,172 +108,199 @@ const SettingsPage = () => {
 
   if (!user) return null;
   return (
-    <div className="min-h-screen p-4 md:p-8">
-      <div className="max-w-7xl mx-auto flex flex-col-reverse lg:flex-row gap-8">
-        <div className="lg:w-1/3 flex items-center justify-center">
-          <div className="w-full h-full relative">
-            <img
-              src={settingsImage}
-              alt="Settings illustration"
-              className="w-full h-full object-contain"
-            />
-          </div>
-        </div>
+    <div className="min-h-screen p-4 md:p-8 relative">
+      {/* Background Blur */}
+      <div
+        className="fixed inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${blurBackground})` }}
+      />
 
-        {/* Content Section - 2/3 of the page */}
-        <div className="lg:w-2/3 space-y-8">
-          <h1 className="text-3xl font-bold text-white">Settings</h1>
-          
-          <Card className="bg-voidBlack/50 border-fgreen/20">
-            <CardHeader>
-              <CardTitle className="text-f2green">User Information</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-white">Username</label>
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    {isEditing ? (
-                      <>
-                        <Input
-                          value={newUsername}
-                          onChange={(e) => {
-                            setNewUsername(e.target.value);
-                            validateUsername(e.target.value);
-                          }}
-                          className={`bg-voidBlack border-f2green text-white ${
-                            error ? "border-red-500" : ""
-                          }`}
-                          placeholder="Enter new username"
-                        />
-                        <Button
-                          onClick={handleUpdateUsername}
-                          className="bg-f2green text-voidBlack hover:bg-fgreen"
-                          disabled={isLoading || !!error}
-                        >
-                          {isLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
-                          Save
-                        </Button>
-                        <Button
-                          onClick={handleCancelEdit}
-                          className="bg-voidBlack border-f2green text-f2green hover:bg-f2green/10"
-                        >
-                          <X className="h-4 w-4 mr-2" />
-                          Cancel
-                        </Button>
-                      </>
-                    ) : (
-                      <>
-                        <span className="text-white">{user.username}</span>
-                        <Button
-                          onClick={() => setIsEditing(true)}
-                          className="bg-voidBlack border-f2green text-f2green hover:bg-f2green/10"
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                      </>
+      <div className="max-w-7xl mx-auto relative z-10">
+        <h1 className="text-4xl font-light text-white mb-8">Settings</h1>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Panel - User Info */}
+          <div className="lg:col-span-2 space-y-8">
+            <Card className="bg-black/30 backdrop-blur-sm border border-f2green rounded-2xl">
+              <CardHeader>
+                <CardTitle className="text-2xl font-light text-white flex items-center gap-2">
+                  <User className="h-6 w-6 text-f2green" />
+                  User Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 text-white">
+                    <User className="h-5 w-5 text-f2green" />
+                    <span className="font-light">Username</span>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2">
+                      {isEditing ? (
+                        <>
+                          <Input
+                            value={newUsername}
+                            onChange={(e) => {
+                              setNewUsername(e.target.value);
+                              validateUsername(e.target.value);
+                            }}
+                            className={`bg-black/20 border-f2green text-white ${
+                              error ? "border-red-500" : ""
+                            }`}
+                            placeholder="Enter new username"
+                          />
+                          <Button
+                            onClick={handleUpdateUsername}
+                            className="bg-f2green hover:bg-fgreen text-black font-medium"
+                            disabled={isLoading || !!error}
+                          >
+                            {isLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
+                            Save
+                          </Button>
+                          <Button
+                            onClick={handleCancelEdit}
+                            className="bg-black/20 border-f2green text-f2green hover:bg-f2green/10"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-white font-light">{user.username}</span>
+                          <Button
+                            onClick={() => setIsEditing(true)}
+                            className="bg-black/20 border-f2green text-f2green hover:bg-f2green/10"
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                    {error && (
+                      <span className="text-red-500 text-sm">{error}</span>
                     )}
                   </div>
-                  {error && (
-                    <span className="text-red-500 text-sm">{error}</span>
-                  )}
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <label className="text-white">Email</label>
-                <div className="text-neutral-400">{user.email}</div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-white">Account Created</label>
-                <div className="text-neutral-400">
-                  {format(new Date(user.created_at), "MMMM d, yyyy")}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 text-white">
+                    <Mail className="h-5 w-5 text-f2green" />
+                    <span className="font-light">Email</span>
+                  </div>
+                  <div className="text-slate-400 font-light">{user.email}</div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
 
-          <Card className="bg-voidBlack/50 border-fgreen/20">
-            <CardHeader>
-              <CardTitle className="text-f2green">Appearance</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <label className="text-white">Background Color</label>
-                <div className="flex gap-4">
-                  {colors.map((color) => (
-                    <button
-                      key={color.value}
-                      onClick={() => changeTheme(color.value)}
-                      className={`w-12 h-12 rounded-full border-2 ${
-                        theme === color.value
-                          ? "border-f2green"
-                          : "border-transparent"
-                      }
-                      bg-${color.value}
-                      `}
-                      title={color.name}
-                    />
-                  ))}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 text-white">
+                    <Calendar className="h-5 w-5 text-f2green" />
+                    <span className="font-light">Account Created</span>
+                  </div>
+                  <div className="text-slate-400 font-light">
+                    {format(new Date(user.created_at), "MMMM d, yyyy")}
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
-          {/* Danger Zone Card */}
-          <Card className="bg-voidBlack/50 border-red-500/20">
-            <CardHeader>
-              <CardTitle className="text-red-500 flex items-center gap-2">
-                <AlertTriangle className="h-5 w-5" />
-                Danger Zone
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <p className="text-neutral-400">
-                  Once you deactivate your account, you will not be able to access your data or boards.
-                  This action can be reversed within 30 days.
-                </p>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button 
-                      variant="destructive" 
-                      className="bg-red-500/10 text-red-500 border-red-500 hover:bg-red-500/20"
-                    >
-                      Deactivate Account
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent className="bg-voidBlack border-red-500/20">
-                    <AlertDialogHeader>
-                      <AlertDialogTitle className="text-red-500">Are you absolutely sure?</AlertDialogTitle>
-                      <AlertDialogDescription className="text-neutral-400">
-                        This action will deactivate your account. You will not be able to access your data or boards.
-                        This action can be reversed within 30 days by logging in again.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel className="bg-voidBlack border-f2green text-f2green hover:bg-f2green/10">
-                        Cancel
-                      </AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={handleDeactivateAccount}
-                        className="bg-red-500 text-white hover:bg-red-600"
-                        disabled={isLoading}
+            <Card className="bg-black/30 backdrop-blur-sm border border-f2green rounded-2xl">
+              <CardHeader>
+                <CardTitle className="text-2xl font-light text-white flex items-center gap-2">
+                  <Palette className="h-6 w-6 text-f2green" />
+                  Appearance
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 text-white">
+                    <Palette className="h-5 w-5 text-f2green" />
+                    <span className="font-light">Background Color</span>
+                  </div>
+                  <div className="flex gap-4">
+                    {colors.map((color) => (
+                      <button
+                        key={color.value}
+                        onClick={() => changeTheme(color.value)}
+                        className={`w-12 h-12 rounded-full border-2 transition-all duration-300 ${
+                          theme === color.value
+                            ? "border-f2green scale-110"
+                            : "border-transparent hover:scale-105"
+                        }
+                        bg-${color.value}
+                        `}
+                        title={color.name}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-black/30 backdrop-blur-sm border border-red-500/50 rounded-2xl">
+              <CardHeader>
+                <CardTitle className="text-2xl font-light text-red-500 flex items-center gap-2">
+                  <AlertTriangle className="h-6 w-6" />
+                  Danger Zone
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-4">
+                  <p className="text-slate-400 font-light">
+                    Once you deactivate your account, you will not be able to access your data or boards.
+                    This action can be reversed within 30 days.
+                  </p>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button 
+                        variant="destructive" 
+                        className="bg-red-500/10 text-red-500 border-red-500 hover:bg-red-500/20 font-medium"
                       >
-                        {isLoading ? (
-                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        ) : (
-                          <AlertTriangle className="h-4 w-4 mr-2" />
-                        )}
-                        Yes, deactivate my account
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                        Deactivate Account
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent className="bg-black/30 backdrop-blur-sm border-red-500/50">
+                      <AlertDialogHeader>
+                        <AlertDialogTitle className="text-red-500 font-light">Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogDescription className="text-slate-400 font-light">
+                          This action will deactivate your account. You will not be able to access your data or boards.
+                          This action can be reversed within 30 days by logging in again.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel className="bg-black/20 border-f2green text-f2green hover:bg-f2green/10 font-medium">
+                          Cancel
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={handleDeactivateAccount}
+                          className="bg-red-500 text-white hover:bg-red-600 font-medium"
+                          disabled={isLoading}
+                        >
+                          {isLoading ? (
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          ) : (
+                            <AlertTriangle className="h-4 w-4 mr-2" />
+                          )}
+                          Yes, deactivate my account
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Panel - Image */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-8">
+              <div className="bg-black/30 backdrop-blur-sm border border-f2green rounded-2xl p-6">
+                <img
+                  src={settingsImage}
+                  alt="Settings illustration"
+                  className="w-full h-auto object-contain"
+                />
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </div>
     </div>

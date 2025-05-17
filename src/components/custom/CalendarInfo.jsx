@@ -120,7 +120,7 @@ const CalendarInfo = ({ board, isLoading }) => {
   }
 
   return (
-    <div className="w-1/2 lg:w-full">
+    <div className="w-full">
       <Card className="rounded-md h-full">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center min-h-[2.5rem]">

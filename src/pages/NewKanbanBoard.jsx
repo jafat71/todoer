@@ -1,69 +1,100 @@
 import CalendarForm from '@/components/custom/CalendarForm';
-import { Info, Calendar, CalendarClock, FileText } from 'lucide-react';
+import { Info, Calendar, CalendarClock, FileText, ArrowLeft } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import blurBackground from "@/assets/blurs.webp";
+import { useNavigate } from 'react-router-dom';
 
 const NewKanbanBoard = () => {
-        return(
-            <div className="min-h-screen flex flex-col items-center justify-center px-4 text-white">
-                <div className="w-full max-w-4xl mx-auto mb-8">
-                    <h1 className="text-3xl font-bold text-center mb-2">Create a New Kanban Board</h1>
-                    <p className="text-neutral-400 text-center">Fill in the details below to create your new board</p>
+    const navigate = useNavigate();
+
+    return (
+        <div className="container mx-auto px-4 py-8 relative">
+            {/* Background Blur */}
+            <div
+                className="fixed inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+                style={{ backgroundImage: `url(${blurBackground})` }}
+            />
+
+            <div className="relative z-10">
+                <div className="mb-12">
+                    <div className="flex items-center gap-4 mb-3">
+                        <button
+                            onClick={() => navigate("/home")}
+                            className="bg-f2green text-black px-2 py-1 rounded hover:bg-fgreen hover:scale-105 transition-all duration-300"
+                        >
+                            <ArrowLeft className="w-6 h-6 text-black" />
+                        </button>
+                        <h1 className="text-4xl font-light text-white">Create New Board</h1>
+                    </div>
+                    <p className="text-slate-400 font-light">Fill in the details below to create your new Kanban board</p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl mx-auto">
-                    <div className="flex flex-col items-center justify-center">
-                        <CalendarForm />
-                    </div>
-
-                    <div className="flex flex-col items-center justify-center">
-                        <Card className="w-full bg-voidBlack/50 border border-fgreen/20 rounded-lg">
-                            <CardHeader className="border-b border-fgreen/20">
-                                <CardTitle className="flex items-center gap-2 text-fgreen">
-                                    <Info className="h-5 w-5" />
-                                    <span>Board Creation Guide</span>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Form Section */}
+                    <div className="flex flex-col">
+                        <Card className="bg-black/30 backdrop-blur-sm border border-f2green rounded-2xl">
+                            <CardHeader>
+                                <CardTitle className="text-2xl font-light text-white flex items-center gap-2">
+                                    <FileText className="h-6 w-6 text-f2green" />
+                                    Board Details
                                 </CardTitle>
                             </CardHeader>
-                            <CardContent className="p-6 space-y-6">
-                                <div className="space-y-2">
-                                    <div className="flex items-center gap-2 text-fgreen">
-                                        <FileText className="h-5 w-5" />
-                                        <h3 className="font-semibold">Kanban Board Name</h3>
+                            <CardContent>
+                                <CalendarForm />
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    {/* Guide Section */}
+                    <div className="flex flex-col">
+                        <Card className="bg-black/30 backdrop-blur-sm border border-f2green rounded-2xl">
+                            <CardHeader>
+                                <CardTitle className="text-2xl font-light text-white flex items-center gap-2">
+                                    <Info className="h-6 w-6 text-f2green" />
+                                    Creation Guide
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-6">
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-2 text-white">
+                                        <FileText className="h-5 w-5 text-f2green" />
+                                        <span className="font-light">Board Name</span>
                                     </div>
-                                    <p className="text-neutral-300 text-sm pl-7">
-                                        Choose a descriptive name for your board that reflects its purpose. 
-                                        This name will help you identify your board at a glance. 
+                                    <p className="text-slate-400 font-light pl-7">
+                                        Choose a descriptive name that reflects your board's purpose.
+                                        This will help you identify it quickly.
                                         The name must be between 2 and 50 characters.
                                     </p>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <div className="flex items-center gap-2 text-fgreen">
-                                        <Calendar className="h-5 w-5" />
-                                        <h3 className="font-semibold">From Date</h3>
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-2 text-white">
+                                        <Calendar className="h-5 w-5 text-f2green" />
+                                        <span className="font-light">Start Date</span>
                                     </div>
-                                    <p className="text-neutral-300 text-sm pl-7">
-                                        Select the start date for your project or task timeline. 
-                                        This date marks the beginning of your board&apos;s timeline and helps 
-                                        you track progress from a specific point in time.
+                                    <p className="text-slate-400 font-light pl-7">
+                                        Select when your project or tasks begin.
+                                        This marks the start of your board's timeline and helps
+                                        track progress from a specific point.
                                     </p>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <div className="flex items-center gap-2 text-fgreen">
-                                        <CalendarClock className="h-5 w-5" />
-                                        <h3 className="font-semibold">To Date</h3>
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-2 text-white">
+                                        <CalendarClock className="h-5 w-5 text-f2green" />
+                                        <span className="font-light">End Date</span>
                                     </div>
-                                    <p className="text-neutral-300 text-sm pl-7">
-                                        Select the target completion date for your project or tasks. 
-                                        This date must be after the From Date and helps you set a deadline 
-                                        for completing the work on this board.
+                                    <p className="text-slate-400 font-light pl-7">
+                                        Choose your target completion date.
+                                        This must be after the start date and helps set
+                                        a clear deadline for your work.
                                     </p>
                                 </div>
 
-                                <div className="mt-4 p-3 bg-fgreen/10 border border-fgreen/20 rounded-md">
-                                    <p className="text-sm text-neutral-300">
-                                        <span className="text-fgreen font-semibold">Tip:</span> You can always edit these details later, 
-                                        but providing accurate dates helps you better organize and track your tasks.
+                                <div className="mt-6 p-4 bg-f2green/5 border border-f2green/20 rounded-xl">
+                                    <p className="text-slate-400 font-light">
+                                        <span className="text-f2green font-medium">Tip:</span> You can edit these details later,
+                                        but setting accurate dates now helps with better task organization and tracking.
                                     </p>
                                 </div>
                             </CardContent>
@@ -71,7 +102,8 @@ const NewKanbanBoard = () => {
                     </div>
                 </div>
             </div>
-        );
+        </div>
+    );
 };
 
 export default NewKanbanBoard;

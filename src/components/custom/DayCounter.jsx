@@ -24,7 +24,7 @@ const DayCounter = () => {
     
 
     return (
-        <Card className="text-center rounded-md w-1/2 lg:w-full ">
+        <Card className="text-center rounded-md w-full ">
             <CardHeader>
                 <CardTitle className="text-2xl font-bold text-f2green text-start">TIME LEFT</CardTitle>
             </CardHeader>

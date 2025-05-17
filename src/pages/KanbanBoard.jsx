@@ -9,6 +9,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Download, Trash, Loader2, Dices } from "lucide-react";
 import usePDFMake from "@/hooks/use-PDFMake";
 import { useUserContext } from "@/contexts/UserContext/UserContext";
+import blurBackground from "@/assets/blurs.webp";
 
 const KanbanBoard = () => {
     const { setKanbanBoard, setDates,kanbanObject, setRandomTask } = useTodoerContext();
@@ -83,17 +84,25 @@ const KanbanBoard = () => {
     }
 
     return (
-        <>
-            <div className="flex flex-col items-center justify-center px-4 border-t-2 border-slate-200 p-4 rounded-lg">
-                <h2 className="lg:hidden text-6xl font-extrabold mb-4 text-white">KNBNN</h2>
+        <div className="min-h-screen relative">
+            {/* Background Blur */}
+            <div
+                className="fixed inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+                style={{ backgroundImage: `url(${blurBackground})` }}
+            />
+
+            <div className="relative z-10 flex flex-col items-center justify-center px-4 p-4 rounded-lg">
 
                 <div className="w-full flex flex-row justify-between my-2 gap-2">
-                    <button
-                        onClick={() => navigate("/home")}
-                        className="bg-f2green  text-black px-2 py-1 rounded hover:bg-fgreen hover:scale-105 transition-all duration-300"
-                    >
-                        <ArrowLeft className="w-6 h-6 text-black" />
-                    </button>
+                    <div className="flex flex-row gap-2">
+                        <button
+                            onClick={() => navigate("/home")}
+                            className="bg-f2green  text-black px-2 py-1 rounded hover:bg-fgreen hover:scale-105 transition-all duration-300"
+                        >
+                            <ArrowLeft className="w-6 h-6 text-black" />
+                        </button>
+                        <h1 className="text-4xl font-light text-white">{board?.title}</h1>
+                    </div>
                     <div className="flex flex-row gap-2">
                     <button
                             onClick={handleGetRandomTask}
@@ -137,7 +146,7 @@ const KanbanBoard = () => {
                     </div>
                 )}
             </div>
-        </>
+        </div>
     );
 };
 

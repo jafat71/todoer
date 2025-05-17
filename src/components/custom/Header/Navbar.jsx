@@ -14,7 +14,7 @@ const Navbar = () => {
   const { isLogged, user, logout } = useUserContext();
   const navigate = useNavigate();
   const location = useLocation();
-  const isAuthRoute = location.pathname === "/auth";
+  const isRootPath = location.pathname === "/";
 
   const handleLogout = async () => {
     const success = await logout();
@@ -77,7 +77,7 @@ const Navbar = () => {
             <PrimaryButton icon={null} text="Login" link="/auth" />
           )}
         </div>
-        {!isAuthRoute && (
+        {isRootPath && (
           <nav className="w-full">
             <ul className="flex flex-row items-center justify-between px-4 py-2
              bg-voidBlack/90 rounded-full border-2 border-f2green 
@@ -121,7 +121,7 @@ const Navbar = () => {
           />
         </Link>
 
-        {!isAuthRoute && (
+        {isRootPath && (
           <nav className="absolute left-1/2 transform -translate-x-1/2">
             <ul className="flex flex-row items-center justify-center gap-x-8 px-6 py-2 
             bg-voidBlack/70 rounded-full border-2 border-f2green bg-gradient-to-r from-f2green/35 to-voidBlack"> 
