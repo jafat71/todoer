@@ -59,26 +59,26 @@ const Stats = () => {
                     <div className="w-full flex flex-row lg:flex-col items-center justify-around">
                         <div className="flex flex-col items-center justify-around">
                             <div>
-                                <div className="text-5xl md:text-6xl lg:text-8xl text-white">
+                                <div className="text-4xl md:text-5xl lg:text-6xl text-white">
                                     {column1}
                                 </div>
-                                <div className="text-white">TO DO</div>
+                                <div className="text-white text-sm xl:text-base">TO DO</div>
                             </div>
                             <div>
-                                <div className="text-5xl md:text-6xl lg:text-8xl text-white">
+                                <div className="text-5xl md:text-6xl lg:text-7xl text-white">
                                     {column2}
                                 </div>
-                                <div className="text-white">Doing</div>
+                                <div className="text-white text-sm xl:text-base">Doing</div>
                             </div>
                             <div>
-                                <div className="text-5xl md:text-6xl lg:text-8xl text-white">
+                                <div className="text-5xl md:text-6xl lg:text-7xl text-white">
                                     {column3}
                                 </div>
-                                <div className="text-white">Done</div>
+                                <div className="text-white text-sm xl:text-base">Done</div>
                             </div>
                         </div>
                         <div className="flex flex-col items-center justify-center">
-                            <div className="text-5xl md:text-6xl lg:text-8xl text-fgreen">
+                            <div className="text-5xl md:text-6xl lg:text-7xl text-fgreen">
                                 {total}
                             </div>
                             <div className="text-f2green">In total</div>
@@ -111,13 +111,12 @@ const Stats = () => {
                         </PieChart>
                     </ResponsiveContainer>
                     <div className="text-center mt-2 sm:mt-4">
-                        <div className="text-2xl font-bold text-f2green">Achieved</div>
 
                         <div className="flex flex-col items-center justify-center">
-                            <div className="text-5xl md:text-6xl lg:text-8xl">
+                            <div className="text-5xl md:text-6xl lg:text-7xl">
                                 {progressPercentage}%
                             </div>
-                            <div className="text-white">In total</div>
+                            <div className="text-f2green">Achieved</div>
                         </div>
                     </div>
                 </div>

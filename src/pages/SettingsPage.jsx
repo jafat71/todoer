@@ -102,8 +102,7 @@ const SettingsPage = () => {
 
   const colors = [
     { name: "Dark", value: "voidBlack" },
-    { name: "Green", value: "f2green" },
-    { name: "Neon", value: "fgreen" },
+    { name: "Gray", value: "voidGray" },
   ];
 
   if (!user) return null;

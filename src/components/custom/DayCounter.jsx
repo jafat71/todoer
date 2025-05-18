@@ -24,7 +24,7 @@ const DayCounter = () => {
     
 
     return (
-        <Card className="text-center rounded-md w-full ">
+        <Card className="text-center rounded-md w-full">
             <CardHeader>
                 <CardTitle className="text-2xl font-bold text-f2green text-start">TIME LEFT</CardTitle>
             </CardHeader>
@@ -37,25 +37,30 @@ const DayCounter = () => {
                         <div className="text-white">
                             {startDateIsBeforeToday ? "Days to begin" : "Days to begin"}
                         </div>
-
                     </div>
                     <div>
-                    <div className="text-5xl md:text-6xl lg:text-8xl text-white rounded-full shadow-md">
-                            {daysRemaining}
+                        <div className={`text-5xl md:text-6xl lg:text-8xl rounded-full shadow-md ${
+                            daysRemaining < 0 ? 'text-red-500' : 'text-white'
+                        }`}>
+                            {daysRemaining < 0 ? '=' : daysRemaining}
                         </div>
-                        <div className="text-white">
-                            to reach finish date
+                        <div className={`${
+                            daysRemaining < 0 ? 'text-red-500 font-bold' : 'text-white'
+                        }`}>
+                            {daysRemaining < 0 ? 'Time limit exceeded!' : 'to reach finish date'}
                         </div>
                     </div>
                 </div>
 
                 <div className="w-full space-y-4">
                     <Progress
-                        value={progressValue}
-                        className="w-full h-4 rounded-xl"
+                        value={Math.min(100, Math.max(0, progressValue))}
+                        className="w-full h-4 rounded-xl "
                     />
-                    <div className="font-semibold text-white">
-                        {Math.max(0,progressValue)}% has passed 
+                    <div className={`font-semibold ${
+                        daysRemaining < 0 ? 'text-red-500' : 'text-white'
+                    }`}>
+                        {daysRemaining < 0 ? 'Time limit exceeded!' : `${Math.max(0,progressValue)}% has passed`}
                     </div>
                 </div>
             </CardContent>

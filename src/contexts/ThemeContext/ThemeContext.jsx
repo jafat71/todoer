@@ -10,7 +10,7 @@ export const ThemeProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    document.documentElement.classList.remove('bg-voidBlack', 'bg-f2green/70', 'bg-fgreen/10');
+    document.documentElement.classList.remove('bg-voidBlack', 'bg-voidGray');
     document.documentElement.classList.add(`bg-${theme}`);
   }, [theme]);
 

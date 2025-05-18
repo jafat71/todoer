@@ -151,14 +151,14 @@ const NoLoggedHome = () => {
       </section>
 
       {/* Demo Section */}
-      <section ref={demoRef} id="demo" className="relative w-full mt-24 md:px-4 section-fade-in">
+      <section ref={demoRef} id="demo" className="relative w-full mt-24 section-fade-in">
         <div className="text-center text-2xl font-semibold mb-4">
           <div className="font-thin">Track your <span className="text-fgreen">projects</span> or just your daily tasks</div>
         </div>
         <div className="bg-voidBlack border-2 border-fgreen max-w-7xl mx-auto rounded-xl shadow-lg overflow-hidden">
-          <div className="flex flex-col md:flex-row items-stretch w-full h-full p-4 gap-4">
+          <div className="flex flex-col md:flex-row items-stretch w-full h-full ">
             {/* Logo Section */}
-            <div className="md:w-1/6 flex flex-col items-center justify-between gap-4 py-4">
+            <div className="md:w-1/6 flex flex-col items-center justify-between py-4">
               <img
                 src={companyLogo}
                 alt="Company Logo"

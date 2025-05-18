@@ -12,7 +12,7 @@ import { useUserContext } from "@/contexts/UserContext/UserContext";
 import blurBackground from "@/assets/blurs.webp";
 
 const KanbanBoard = () => {
-    const { setKanbanBoard, setDates,kanbanObject, setRandomTask } = useTodoerContext();
+    const { setKanbanBoard, setDates, kanbanObject, setRandomTask } = useTodoerContext();
     const { id } = useParams();
     const [board, setBoard] = useState({});
     const [isLoading, setIsLoading] = useState(true);
@@ -42,7 +42,7 @@ const KanbanBoard = () => {
 
     const handleDeleteBoard = async () => {
         //Confirmar eliminación
-        if (window.confirm("¿Are you sure you want to delete this board?")) {    
+        if (window.confirm("¿Are you sure you want to delete this board?")) {
             try {
                 await deleteUserBoard(id);
                 navigate("/");
@@ -84,14 +84,14 @@ const KanbanBoard = () => {
     }
 
     return (
-        <div className="min-h-screen relative">
+        <div className="max-w-[2400px] mx-auto relative px-4">
             {/* Background Blur */}
             <div
                 className="fixed inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
                 style={{ backgroundImage: `url(${blurBackground})` }}
             />
 
-            <div className="relative z-10 flex flex-col items-center justify-center px-4 p-4 rounded-lg">
+            <div className="relative mb-4  z-10 flex flex-col items-center justify-center  rounded-lg">
 
                 <div className="w-full flex flex-row justify-between my-2 gap-2">
                     <div className="flex flex-row gap-2">
@@ -101,10 +101,10 @@ const KanbanBoard = () => {
                         >
                             <ArrowLeft className="w-6 h-6 text-black" />
                         </button>
-                        <h1 className="text-4xl font-light text-white">{board?.title}</h1>
+                        <h1 className="text-4xl mx-2 font-light text-white">{board?.title}</h1>
                     </div>
                     <div className="flex flex-row gap-2">
-                    <button
+                        <button
                             onClick={handleGetRandomTask}
                             className="bg-f2green  text-black px-2 py-1 rounded hover:bg-fgreen hover:scale-105 transition-all duration-300"
                         >
@@ -130,18 +130,28 @@ const KanbanBoard = () => {
                         <Loader2 className="w-12 h-12 animate-spin text-f2green" />
                     </div>
                 ) : (
-                    <div className="flex flex-col w-full lg:flex-row">
+                    <div className="flex flex-col w-full lg:flex-row my-4
+                        bg-voidBlack rounded-md shadow-lg shadow-f2green/20
+                    ">
                         <div className="flex flex-row w-full lg:w-1/4 lg:flex-col">
                             <CalendarInfo board={board} isLoading={isLoading} />
                             <DayCounter />
+
+                            <div className="hidden lg:flex w-full justify-center my-4">
+                                <div className="space-y-2">
+                                    <div className="w-2 h-2 rounded-full bg-fgreen"></div>
+                                    <div className="w-2 h-2 rounded-full bg-fgreen"></div>
+                                    <div className="w-2 h-2 rounded-full bg-fgreen"></div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div className="flex flex-col w-full lg:w-3/4">
+                        <div className="flex flex-col w-full lg:w-3/4 ">
                             <Kanban boardId={id} />
                         </div>
 
                         <div className="flex flex-row w-full lg:w-1/4 lg:flex-col">
-                            <Stats/>
+                            <Stats />
                         </div>
                     </div>
                 )}

@@ -16,6 +16,7 @@ export default {
             },
             colors: {
                 voidBlack: '#0A0A0A',
+                voidGray: '#1A1A1A',
                 f2green: '#00FF00',
                 fgreen: '#39FF14',
                 fblue: '#2323FF'

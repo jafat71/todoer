@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { CalendarIcon, Pencil, Save, X } from "lucide-react";
+import { CalendarIcon, CheckCheck, Pencil, Save, X } from "lucide-react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { useEffect, useState } from "react";
@@ -96,8 +96,6 @@ const CalendarInfo = ({ board, isLoading }) => {
     setEnableEdit(false);
     setBoardName(board?.title);
     form.reset();
-    form.setValue("fromDate", new Date(board.from_date));
-    form.setValue("toDate", new Date(board.to_date));
   }
 
   if (isLoading) {
@@ -219,14 +217,22 @@ const CalendarInfo = ({ board, isLoading }) => {
                       <Button type="submit" className="w-full  bg-f2green  text-black px-4 py-2 rounded hover:bg-fgreen hover:scale-105 transition-all duration-300" onClick={handleSubmit}>
                         <Save className="w-6 h-6 text-black" />
                       </Button>
-                      <Button className="w-full bg-red-500" onClick={handleCancel}>
+                      <button  className="w-full bg-red-500 flex  
+                      hover:scale-105 transition-all duration-300
+                      items-center justify-center" onClick={handleCancel}>
                         <X className="w-6 h-6 text-black" />
-                      </Button>
+                      </button>
                     </div>
                   ) : (
-                    <Button className="w-full bg-f2green  text-black px-4 py-2 rounded hover:bg-fgreen hover:scale-105 transition-all duration-300" onClick={handleEdit}>
-                      <Pencil className="w-6 h-6  text-black" /> 
-                    </Button> 
+                    <div className="flex flex-row justify-end gap-2 w-full">
+                      <Button className="w-9 bg-f2green  text-black px-4 py-2 rounded hover:bg-fgreen hover:scale-105 transition-all duration-300" onClick={handleEdit}>
+                        <Pencil className="w-6 h-6  text-black" /> 
+                      </Button>
+                      <Button className="w-9 bg-f2green  text-black px-4 py-2 rounded hover:bg-fgreen hover:scale-105 transition-all duration-300" onClick={handleEdit}>
+                        <CheckCheck className="w-6 h-6  text-black" /> 
+                      </Button> 
+                    </div>
+
                   )
                 }
             </form>
