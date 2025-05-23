@@ -23,7 +23,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { updateUserBoardData } from "@/services/actions";
+import { Badge } from "@/components/ui/badge";
+import { updateUserBoardData, updateUserBoardStatus } from "@/services/actions";
 import { useTodoerContext } from "@/contexts/TodoerContext/TodoerContext";
 
 const FormSchema = z.object({
@@ -38,6 +39,7 @@ const FormSchema = z.object({
 const CalendarInfo = ({ board, isLoading }) => {
   const {setDates} = useTodoerContext()
   const [boardName, setBoardName] = useState(board?.title);
+  const [boardStatus, setBoardStatus] = useState(board?.completed);
   const [enableEdit, setEnableEdit] = useState(false);
 
   const form = useForm({
@@ -73,12 +75,33 @@ const CalendarInfo = ({ board, isLoading }) => {
     setEnableEdit(true);
   }
 
+  const handleChangeBoardStatus = async (e) => {
+    e.preventDefault();
+    
+    // Mostrar alerta de confirmación
+    const statusText = board?.completed ? "marcar como en progreso" : "marcar como completado";
+    const isConfirmed = window.confirm(`¿Estás seguro de que quieres ${statusText} este board?`);
+    
+    if (!isConfirmed) {
+      return; // Si el usuario cancela, no hacer nada
+    }
+    
+    setEnableEdit(false);
+    try {
+       await updateUserBoardStatus(board.id);
+       setBoardStatus(!boardStatus);
+    } catch (error) {
+      console.error("Error updating user board:", error);
+      throw error;
+    } 
+  }
+
   const handleUpdateBoard = async (data) => {
     try {
       const boardData = {
         title: boardName,
         from_date: data.fromDate ? new Date(data.fromDate).toISOString() : null,
-        to_date: data.toDate ? new Date(data.toDate).toISOString() : null
+        to_date: data.toDate ? new Date(data.toDate).toISOString() : null,
       };  
       const response = await updateUserBoardData(boardData, board.id);
       const newDates = {
@@ -121,19 +144,32 @@ const CalendarInfo = ({ board, isLoading }) => {
     <div className="w-full">
       <Card className="rounded-md h-full">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center min-h-[2.5rem]">
-            {enableEdit ? (
-              <input 
-                type="text"
-                className="w-full text-2xl font-bold text-center bg-transparent border-b-2 border-f2green focus:outline-none focus:border-fgreen transition-colors"
-                value={boardName}
-                onChange={(e) => setBoardName(e.target.value)}
-                placeholder="Board name"
-              />
-            ) : (
-              <span className="block w-full text-start">{boardName}</span>
-            )}
-          </CardTitle>
+          <div className="flex justify-between items-start gap-4">
+            <CardTitle className="text-2xl font-bold flex-1 min-h-[2.5rem]">
+              {enableEdit ? (
+                <input 
+                  type="text"
+                  className="w-full text-2xl font-bold bg-transparent border-b-2 border-f2green focus:outline-none focus:border-fgreen transition-colors"
+                  value={boardName}
+                  onChange={(e) => setBoardName(e.target.value)}
+                  placeholder="Board name"
+                />
+              ) : (
+                <span className="block w-full text-start">{boardName}</span>
+              )}
+            </CardTitle>
+            <Badge 
+              variant={boardStatus ? "default" : "secondary"}
+              className={cn(
+                "px-3 py-1 text-sm font-medium",
+                boardStatus 
+                  ? "bg-f2green text-black" 
+                  : "border-f2green border-2 bg-voidBlack text-fgreen"
+              )}
+            >
+              {boardStatus ? "Completed" : "In Progress"}
+            </Badge>
+          </div>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -228,7 +264,7 @@ const CalendarInfo = ({ board, isLoading }) => {
                       <Button className="w-9 bg-f2green  text-black px-4 py-2 rounded hover:bg-fgreen hover:scale-105 transition-all duration-300" onClick={handleEdit}>
                         <Pencil className="w-6 h-6  text-black" /> 
                       </Button>
-                      <Button className="w-9 bg-f2green  text-black px-4 py-2 rounded hover:bg-fgreen hover:scale-105 transition-all duration-300" onClick={handleEdit}>
+                      <Button className="w-9 bg-f2green  text-black px-4 py-2 rounded hover:bg-fgreen hover:scale-105 transition-all duration-300" onClick={handleChangeBoardStatus}>
                         <CheckCheck className="w-6 h-6  text-black" /> 
                       </Button> 
                     </div>

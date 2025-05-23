@@ -110,17 +110,18 @@ const KanbanBoard = () => {
                         >
                             <Dices className="w-6 h-6 text-black" />
                         </button>
-                        <button
-                            onClick={handleDeleteBoard}
-                            className="bg-f2green  text-black px-2 py-1 rounded hover:bg-fgreen hover:scale-105 transition-all duration-300"
-                        >
-                            <Trash className="w-6 h-6 text-black" />
-                        </button>
+                        
                         <button
                             onClick={generarPDF}
                             className="bg-f2green  text-black px-2 py-1 rounded hover:bg-fgreen hover:scale-105 transition-all duration-300"
                         >
                             <Download className="w-6 h-6 text-black" />
+                        </button>
+                        <button
+                            onClick={handleDeleteBoard}
+                            className="bg-red-500  text-black px-2 py-1 rounded hover:bg-fgreen hover:scale-105 transition-all duration-300"
+                        >
+                            <Trash className="w-6 h-6 text-black" />
                         </button>
                     </div>
                 </div>

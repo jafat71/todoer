@@ -97,6 +97,16 @@ export const updateUserBoardData = async (data, id) => {
     }
 }
 
+export const updateUserBoardStatus = async (boardId) => {
+    try {
+        const data = await axios.put(BACKEND_URL+"/boards/"+boardId+"/status")
+        return data.data
+    } catch (error) {
+        console.error("Error changing board status:", error);
+        throw error;
+    }
+}
+
 export const deleteUserBoard = async (boardId) => {
     try {
         const data = await axios.delete(BACKEND_URL+"/boards/"+boardId)

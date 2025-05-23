@@ -27,7 +27,7 @@ const UserBoard = ({ board }) => {
                 <div className={`px-2 py-1 rounded-full text-xs font-medium ${
                     board.completed 
                         ? "bg-green-900/30 text-green-400" 
-                        : "bg-amber-900/30 text-amber-400"
+                        : "bg-amber-900/30 text-yellow-400"
                 }`}>
                     {board.completed ? "Completed" : "In Progress"}
                 </div>
