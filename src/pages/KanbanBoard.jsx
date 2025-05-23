@@ -101,7 +101,6 @@ const KanbanBoard = () => {
                         >
                             <ArrowLeft className="w-6 h-6 text-black" />
                         </button>
-                        <h1 className="text-4xl mx-2 font-light text-white">{board?.title}</h1>
                     </div>
                     <div className="flex flex-row gap-2">
                         <button
@@ -134,7 +133,7 @@ const KanbanBoard = () => {
                     <div className="flex flex-col w-full lg:flex-row my-4
                         bg-voidBlack rounded-md shadow-lg shadow-f2green/20
                     ">
-                        <div className="flex flex-row w-full lg:w-1/4 lg:flex-col">
+                        <div className="flex flex-col sm:flex-row  w-full lg:w-1/4 lg:flex-col">
                             <CalendarInfo board={board} isLoading={isLoading} />
                             <DayCounter />
 

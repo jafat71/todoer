@@ -141,9 +141,9 @@ const CalendarInfo = ({ board, isLoading }) => {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full relative">
       <Card className="rounded-md h-full">
-        <CardHeader>
+        <CardHeader className="my-4">
           <div className="flex justify-between items-start gap-4">
             <CardTitle className="text-2xl font-bold flex-1 min-h-[2.5rem]">
               {enableEdit ? (
@@ -161,7 +161,7 @@ const CalendarInfo = ({ board, isLoading }) => {
             <Badge 
               variant={boardStatus ? "default" : "secondary"}
               className={cn(
-                "px-3 py-1 text-sm font-medium",
+                "absolute top-0 right-0 px-3 py-1 text-sm font-medium",
                 boardStatus 
                   ? "bg-f2green text-black" 
                   : "border-f2green border-2 bg-voidBlack text-fgreen"
@@ -180,31 +180,36 @@ const CalendarInfo = ({ board, isLoading }) => {
                 render={({ field }) => (
                   <FormItem className="flex flex-col w-full">
                     <FormLabel>From Date</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            disabled={!enableEdit}
-                            variant={"outline"}
-                            className={cn(
-                              "w-full pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? format(field.value, "PPP") : <span>Select a start date</span>}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
+                    {enableEdit ? (
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-full sm:w-[150px] pl-3 text-left font-normal text-sm sm:text-base",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? format(field.value, "PPP") : <span>Select a start date</span>}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    ) : (
+                      <div className="w-full pl-3 text-left font-normal text-sm sm:text-base">
+                        {field.value ? format(field.value, "PPP") : "No date selected"}
+                      </div>
+                    )}
                     <FormMessage />
                   </FormItem>
                 )}
@@ -216,32 +221,37 @@ const CalendarInfo = ({ board, isLoading }) => {
                 render={({ field }) => (
                   <FormItem className="flex flex-col w-full">
                     <FormLabel>To Date</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            disabled={!enableEdit}
-                            variant={"outline"}
-                            className={cn(
-                              "w-full pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? format(field.value, "PPP") : <span>Select an end date</span>}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) => (fromDate ? date <= fromDate : false)}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
+                    {enableEdit ? (
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-full sm:w-[150px] pl-3 text-left font-normal text-sm sm:text-base",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? format(field.value, "PPP") : <span>Select an end date</span>}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            disabled={(date) => (fromDate ? date <= fromDate : false)}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    ) : (
+                      <div className="w-full pl-3 text-left font-normal text-sm sm:text-base">
+                        {field.value ? format(field.value, "PPP") : "No date selected"}
+                      </div>
+                    )}
                     <FormMessage />
                   </FormItem>
                 )}

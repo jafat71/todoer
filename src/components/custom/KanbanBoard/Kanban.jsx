@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import { useState, useCallback, useEffect, useRef } from "react";
-import { DndContext, closestCenter, DragOverlay } from "@dnd-kit/core";
+import { DndContext, closestCenter, DragOverlay, pointerWithin, rectIntersection } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { DroppableContainer } from "./DroppableContainer";
 import { SortableItem } from "./SortableItem";
@@ -232,6 +232,7 @@ const Kanban = ({boardId = "", demo=false}) => {
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
             onDragStart={handleDragStart}
+    
         >
             <div className="flex w-full h-full overflow-x-auto">
                 {Object.entries(kanbanObject).map(([columnId, column]) => (
@@ -244,7 +245,7 @@ const Kanban = ({boardId = "", demo=false}) => {
                                 {column.title}
                             </CardTitle>
                         </CardHeader>
-                        <CardContent className="flex-1 overflow-y-hidden p-0">
+                        <CardContent className="flex-1 overflow-y-auto p-0 scrollbar-hide">
                             <SortableContext
                                 id={columnId}
                                 items={column.tasks}
@@ -303,9 +304,9 @@ const Kanban = ({boardId = "", demo=false}) => {
                             !demo && (
                                 <Button
                                     onClick={() => handleAddTaskClick(columnId)}
-                                    className="mt-auto bg-fgreen hover:text-white transition-all duration-300 m-2"
+                                    className="mt-auto flex items-center justify-center bg-fgreen hover:text-white transition-all duration-300 m-2"
                                 >
-                                    <div className="text-black font-semibold text-lg w-full h-full">
+                                    <div className="text-black font-semibold text-center text-xs md:text-lg w-full h-full">
                                         Add Task
                                     </div>
                                 </Button>
@@ -330,7 +331,7 @@ const Kanban = ({boardId = "", demo=false}) => {
             <DragOverlay>
                 {activeTask ? (
                     <div
-                        className="p-2 bg-white h-full rounded-md shadow-sm"
+                        className="p-2 bg-fgreen text-wrap break-words text-voidBlack font-semibold border-2 border-voidBlack h-full rounded-md shadow-sm"
                         style={{ opacity: 0.9 }}
                     >
                         {activeTask.title}
